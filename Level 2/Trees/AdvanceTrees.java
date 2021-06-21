@@ -399,7 +399,12 @@ public class AdvanceTrees {
 			this.vl = vl;
 		}
 	}
-
+	/*
+	make all idx positive using adding abs(min) to all
+	now use BFS , all vlevel of one horiz level first , OR all x of y first
+	then move to nxt level
+	idx of list map to vlevel
+	*/
 	public static List<List<Integer>> verticalOrder(TreeNode root) {
 		int[] minMax = new int[2];
 		widthOfShadow(root, 0, minMax);
@@ -657,42 +662,90 @@ public class AdvanceTrees {
 	   can also use 1 priority queue with vlevel , hlevel , val
 	*/
 
-	public static List<List<Integer>> verticalOrder(TreeNode root) {
+	//Using 1 PQ - priority hlevel>vlevel>val
+	public List < List < Integer >> verticalTraversal_01(TreeNode root) {
 		int[] minMax = new int[2];
 		widthOfShadow(root, 0, minMax);
 
 		int vLevels = minMax[1] - minMax[0] + 1;
-
-		List<List<Integer>> res = new ArrayList<>();
+		List < List < Integer >> res = new ArrayList < > ();
 		for (int i = 0; i < vLevels; i++) {
-			res.add(new ArrayList<>());
+			res.add(new ArrayList < > ());
 		}
 
-		Queue < vPair > q = new ArrayDeque < > ();
-		//idx of root = Math.abs(leftmost)
-		q.add(new vPair(root, Math.abs(minMax[0])));
+		// using Lambda operator
+		PriorityQueue < vPair > pq = new PriorityQueue < > ((a, b) -> {
+			if (a.hl != b.hl) return a.hl - b.hl;
+			else if (a.vl != b.vl) return a.vl - b.vl;
+			else return a.node.val - b.node.val;
+		});
 
-		while (q.size() > 0) {
+		pq.add(new vPair(root, Math.abs(minMax[0]), 0));
 
-			int size = q.size();
-
-			for (int i = 0; i < size; i++) {
-				vPair rem = q.poll();
+		while (pq.size() > 0) {
+			int size = pq.size();
+			while (size-- > 0) {
+				vPair rem = pq.remove();
 				TreeNode node = rem.node;
-				int level = rem.vl;
+				int vl = rem.vl;
+				int hl = rem.hl;
 
-				res.get(level).add(node.val);
+				res.get(vl).add(node.val);
 
-				if (node.left != null) q.add(new vPair(node.left, level - 1));
-				if (node.right != null) q.add(new vPair(node.right, level + 1));
-
+				if (node.left != null) pq.add(new vPair(node.left, vl - 1, hl + 1));
+				if (node.right != null) pq.add(new vPair(node.right, vl + 1, hl + 1));
 			}
 		}
 
 		return res;
-
 	}
 
+	//Using 2 PQ Parent and Child - segregates horiz levels , we only need to worry abt vLvl
+	public List < List < Integer >> verticalTraversal_02(TreeNode root) {
+		int[] minMax = new int[2];
+		widthOfShadow(root, 0, minMax);
+
+		int vLevels = minMax[1] - minMax[0] + 1;
+		List < List < Integer >> res = new ArrayList < > ();
+		for (int i = 0; i < vLevels; i++) {
+			res.add(new ArrayList < > ());
+		}
+
+		// using Lambda operator
+		PriorityQueue < vPair > pq = new PriorityQueue < > ((a, b) -> {
+			if (a.vl != b.vl) return a.vl - b.vl;
+			else return a.node.val - b.node.val;
+		});
+
+		PriorityQueue < vPair > childQ = new PriorityQueue < > ((a, b) -> {
+			if (a.vl != b.vl) return a.vl - b.vl;
+			else return a.node.val - b.node.val;
+		});
+
+
+
+		pq.add(new vPair(root, Math.abs(minMax[0])));
+
+		while (pq.size() > 0) {
+			int size = pq.size();
+			while (size-- > 0) {
+				vPair rem = pq.remove();
+				TreeNode node = rem.node;
+				int vl = rem.vl;
+
+				res.get(vl).add(node.val);
+
+				if (node.left != null) childQ.add(new vPair(node.left, vl - 1));
+				if (node.right != null) childQ.add(new vPair(node.right, vl + 1));
+			}
+
+			PriorityQueue temp = childQ;
+			childQ = pq;
+			pq = temp;
+		}
+
+		return res;
+	}
 
 
 
