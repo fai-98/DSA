@@ -284,7 +284,7 @@ public class AdvanceTrees {
 		TreeNode R = lowestCommonAncestor(root.right, p, q);
 		TreeNode self = (root == p || root == q) ? root : null;
 		if ((L != null && R != null) || (self != null && L != null) || (self != null && R != null)) {
-			return self;
+			return root;  //return root , not self coz  in L&&R case self is null
 		}
 
 		return L != null ? L : R != null ? R : self != null ? self : null;
