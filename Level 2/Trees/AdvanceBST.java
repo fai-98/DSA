@@ -174,9 +174,9 @@ public class AdvanceBST {
 
 	}
 
-	//BST From Level Order
+	//BST From Level Order lvl order is BFS - so solve using BFS
 
-	public static class bstPair{
+	public static class bstPair {
 		TreeNode node = null;
 		int lr = 0;
 		int rr = 0;

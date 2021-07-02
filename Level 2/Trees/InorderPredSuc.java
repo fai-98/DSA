@@ -13,12 +13,11 @@ public class InorderPredSuc {
 		}
 	}
 
-
-	/*Find Inorder Predecessor and Successor of node in
-	Binary Tree - T:O(n) , S:O(N)
-	Binary Saerch Tree - T:O(logn) , S:O(1)
-	*/
-	public static class  allSolPair {
+	/*
+	 * Find Inorder Predecessor and Successor of node in Binary Tree - T:O(n) ,
+	 * S:O(N) Binary Saerch Tree - T:O(logn) , S:O(1)
+	 */
+	public static class allSolPair {
 		TreeNode pred = null;
 		TreeNode suc = null;
 		TreeNode prev = null;
@@ -28,9 +27,9 @@ public class InorderPredSuc {
 	}
 
 	// for pred suc , intially pred=suc=pre=null , find ceil and floor
-	public static void allSolution(TreeNode node , int data , allSolPair pair) {
-		if (node == null)return;
-
+	public static void allSolution(TreeNode node, int data, allSolPair pair) {
+		if (node == null)
+			return;
 
 		if (node.val < data) {
 			pair.floor = Math.max(pair.floor, node.val);
@@ -54,12 +53,12 @@ public class InorderPredSuc {
 		allSolution(node.right, data, pair);
 	}
 
-	/*find inorder pred successor of BST
-	if data lies to left - this node is potential successor
-		data found!! data.right exits - Suc = leftmost of right
-	if data lies to right - this node is potential predecessor
-		data found!! data.left exits - Pred = rightmost of left
-	*/
+	/*
+	 * find inorder pred successor of BST if data lies to left - this node is
+	 * potential successor data found!! data.right exits - Suc = leftmost of right
+	 * if data lies to right - this node is potential predecessor data found!!
+	 * data.left exits - Pred = rightmost of left
+	 */
 
 	public TreeNode getLeftMost(TreeNode root) {
 		while (root.left != null) {
@@ -75,9 +74,11 @@ public class InorderPredSuc {
 		return root;
 	}
 
-	public void getPS(TreeNode root ) {
+	// T: O(logN) binary search like - we directly(iteratively) reach the target ,
+	// S: O(1);
+	public void getPS(TreeNode root, int data) {
 
-		TreeNode curr = root , pred = null, succ = null;
+		TreeNode curr = root, pred = null, succ = null;
 		while (curr != null) {
 
 			if (curr.val == data) {
@@ -85,11 +86,21 @@ public class InorderPredSuc {
 					TreeNode node = getLeftMost(curr.right);
 					succ = node;
 				}
-			} else if ()
+				if (curr.left != null) {
+					TreeNode node = getRightMost(curr.left);
+					pred = node;
+				}
+				break;
+			} else if (curr.val > data) {
+				succ = curr;
+				curr = curr.left;
+			} else {
+				pred = curr;
+				curr = curr.right;
 			}
 
+		}
+		System.out.println("PRED-> " + pred.val + "  " + "SUCC-> " + succ.val);
+
 	}
-
-
-
 }
