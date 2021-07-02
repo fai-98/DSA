@@ -224,4 +224,51 @@ public class SlidingWindowLeetCode {
         return max;
     }
 
+    // #209. Minimum Size Subarray Sum
+    public int minSubArrayLen(int target, int[] nums) {
+        int st = 0, end = 0, len = (int) 1e9, sum = 0;
+
+        while (end < nums.length) {
+            sum += nums[end];
+            end++;
+
+            while (sum >= target) {
+                len = Math.min(end - st, len);
+                sum -= nums[st];
+                st++;
+            }
+
+        }
+
+        return len == (int) 1e9 ? 0 : len;
+    }
+
+    // 424. Longest Repeating Character Replacement
+    // can be basically reduced to ->
+    // total_chars - majority_chars = other distinct chars <= k
+    // should not be greater than k , else can't be flipped
+
+    public int characterReplacement(String s, int k) {
+        int majorityChar = 0, st = 0, end = 0, len = -(int) 1e9;
+
+        int[] map = new int[126];
+
+        while (end < s.length()) {
+            char ch = s.charAt(end);
+            map[ch - '0']++;
+            majorityChar = Math.max(majorityChar, map[ch - '0']);
+            end++;
+            // invalid window (len==end-st) & not end-st+1 , coz end inc already
+            while (end - st - majorityChar > k) {
+                char temp = s.charAt(st);
+                map[temp - '0']--;
+                st++;
+            }
+
+            len = Math.max(len, end - st);
+        }
+
+        return len;
+    }
+
 }
