@@ -1,64 +1,78 @@
 import java.util.ArrayList;
 import java.util.*;
+
 public class BinaryTreeConversions {
-	public static class TreeNode {
+	// public static class Node {
+	// int val = 0;
+	// Node left = null;
+	// Node right = null;
+
+	// Node(int val) {
+	// this.val = val;
+	// }
+	// }
+
+	// public class ListNode {
+	// ListNode left = null;
+	// ListNode right = null;
+	// int val;
+
+	// ListNode(int val) {
+	// this.val = val;
+	// }
+
+	// ListNode(ListNode left, ListNode right, int val) {
+	// this.left = left;
+	// this.right = right;
+	// this.val = val;
+	// }
+	// }
+
+	public static class Node {
 		int val = 0;
-		TreeNode left = null;
-		TreeNode right = null;
+		Node left = null;
+		Node right = null;
 
-		TreeNode(int val) {
+		Node(int val) {
 			this.val = val;
 		}
 	}
 
-	public class ListNode {
-		ListNode prev = null;
-		ListNode next = null;
-		int val;
+	/*
+	 * Binary Tree to DLL
+	 * https://www.geeksforgeeks.org/convert-given-binary-tree-doubly-linked-list-
+	 * set-3/
+	 * https://www.geeksforgeeks.org/convert-a-binary-tree-to-a-circular-doubly-link
+	 * -list/
+	 */
 
-		public ListNode(int val) {}
+	/*
+	 * iterative inorder traversal , can also do recursive using static node left ,
+	 * same logic if static not allowed , make Node[] arr of 1 size , the changes
+	 * will persist also can make a Pair Class
+	 * 
+	 * Same Code for CDLL head.left = tail; tail.right = head; in DLL left = prev,
+	 * right = next;
+	 */
 
-		public ListNode(ListNode prev, ListNode next, int val) {
-			this.prev = prev;
-			this.next = next;
-			this.val = val;
-		}
-	}
+	public static Node convertDLL(Node root) {
+		Stack<Node> st = new Stack<>();
 
-	/*Binary Tree to DLL
-	https://www.geeksforgeeks.org/convert-given-binary-tree-doubly-linked-list-set-3/
-	https://www.geeksforgeeks.org/convert-a-binary-tree-to-a-circular-doubly-link-list/
-	*/
-
-	/*iterative inorder traversal ,
-	can also do recursive using static node prev , same logic
-	if static not allowed , make Node[] arr of 1 size , the changes will persist
-	also can make a Pair Class
-
-	Same Code for CDLL
-		head.left = tail;
-	    tail.right = head;
-	*/
-
-	public static TreeNode convertDLL(TreeNode root) {
-		Stack<TreeNode> st = new Stack<>();
-
-		TreeNode curr = root;
-		TreeNode prev = null;
-
+		Node curr = root;
+		Node left = null;
 
 		while (curr != null || !st.isEmpty()) {
-			while (curr != null) { //push all left
+			while (curr != null) { // push all left
 				st.push(curr);
 				curr = curr.left;
 			}
 
 			curr = st.pop();
-			if (prev != null) {
-				curr.left = prev;
-				prev.right = curr;
+			if (left != null) {
+				curr.left = left;
+				left.right = curr;
 			}
-			prev = curr;
+			left = curr;
 			curr = curr.right;
 
 		}
@@ -69,83 +83,95 @@ public class BinaryTreeConversions {
 		return root;
 	}
 
-	//Convert sorted DLL to BST left-prev , right-next
-	public static TreeNode DLLtoBST(ListNode head) {
-		if (head == null || head.next == null)return new TreeNode(head.val);
-		ListNode mid = mid(head);
+	// Convert sorted DLL to BST left-left , right-right
+	public static Node DLLtoBST(Node head) {
+		if (head == null || head.right == null)
+			return new Node(head.val);
+		Node mid = mid(head);
 
 		// catch
-		ListNode prev = mid.prev;
-		ListNode next = mid.next;
-		//unlink
-		prev.next = mid.prev = null;
-		next.prev = mid.next = null;
+		Node left = mid.left;
+		Node right = mid.right;
+		// unlink
+		left.right = mid.left = null;
+		right.left = mid.right = null;
 
-
-		TreeNode root = new TreeNode(mid.val);
-		//recur
+		Node root = new Node(mid.val);
+		// recur
 		root.left = DLLtoBST(head);
-		root.right = DLLtoBST(next);
+		root.right = DLLtoBST(right);
 
 		return root;
 	}
 
-	public static ListNode mid(ListNode head) {
-		if (head == null || head.next == null)return head;
-		ListNode slow = head;
-		ListNode fast = head;
+	public static Node mid(Node head) {
+		if (head == null || head.right == null)
+			return head;
+		Node slow = head;
+		Node fast = head;
 
-		//this gives second mid
-		while (fast != tail && fast.next != tail) {
-			slow = slow.next;
-			fast = fast.next.next;
+		// this gives second mid
+		while (fast != null && fast.right != null) {
+			slow = slow.right;
+			fast = fast.right.right;
 		}
 		return slow;
 	}
 
-	//mergeSort DLL left-prev , right-next
-	public static ListNode sortDLL(ListNode head) {
-		if (head == null || head.next == null)return head;
+	// mergeSort DLL left-left , right-right
+	public static Node sortDLL(Node head) {
+		if (head == null || head.right == null)
+			return head;
 
-		ListNode mid = mid(head);
-		ListNode nHead = mid.next;
-		nHead.prev = mid.next = null;
+		Node mid = mid(head);
+		// forw unlink
+		Node nHead = mid.right;
+		nHead.left = mid.right = null;
 
-		ListNode l1 = sortDLL(head);
-		ListNode l2 = sortDLL(nHead);
+		// left call head to mid(inclusive) & Rc (mid.next - end);
+
+		Node l1 = sortDLL(head);
+		Node l2 = sortDLL(nHead);
 
 		return merge2DLL(l1, l2);
 	}
 
-	public static ListNode merge2DLL(ListNode l1, ListNode l2) {
+	public static Node merge2DLL(Node l1, Node l2) {
 		if (l1 == null || l2 == null) {
 			return l1 == null ? l2 : l1;
 		}
 
-		ListNode dummy = new ListNode();
-		ListNode dd = dummy;
+		Node dummy = new Node(-1);
+		Node dd = dummy;
 
 		while (l1 != null && l2 != null) {
 			if (l1.val < l2.val) {
-				dd.next = l1;
-				l1 = l1.next;
+				dd.right = l1;
+				l1 = l1.right;
 			} else {
-				dd.next = l2;
-				l2 = l2.next;
+				dd.right = l2;
+				l2 = l2.right;
 			}
-			dd = dd.next;
+			dd = dd.right;
 		}
 
-		dd.next = l1 != null ? l1 : l2;
-		ListNode head = dummy.next;
-		dummy.next = null;
+		dd.right = l1 != null ? l1 : l2;
+		Node head = dummy.right;
+		dummy.right = null;
 
 		return head;
 	}
 
-	//Binary Tree to BST using all functions
+	public Node BT_to_BST(Node root) {
+		Node head = convertDLL(root);
+		head = sortDLL(head);
+		Node nHead = DLLtoBST(head);
+		return nHead;
+	}
 
-	// BT-DLL O(N)  , S: logN;
+	// Binary Tree to BST using all functions
+
+	// BT-DLL O(N) , S: logN;
 	// DLL sort O(NlogN) , S: logN
 	// srotedDLL->BSt O(NlogN) , S: logN
 
