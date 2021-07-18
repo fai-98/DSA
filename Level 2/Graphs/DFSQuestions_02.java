@@ -174,6 +174,45 @@ public class DFSQuestions_02 {
         dfs_surr(grid, r, c + 1);
     }
 
+    // 1020. Number of Enclaves (Exactly Similar to 130.)
+    public int numEnclaves(int[][] grid) {
+        int n = grid.length, m = grid[0].length, enclaves = 0;
+        int[][] dir = { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 } };
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (i == 0 || j == 0 || i == n - 1 || j == m - 1) {
+                    if (grid[i][j] == 1) {
+                        dfs(grid, i, j, dir);
+                    }
+                }
+            }
+        }
+
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = 1; j < m - 1; j++) {
+                if (grid[i][j] == 1)
+                    enclaves++;
+            }
+        }
+
+        return enclaves;
+    }
+
+    public void dfs(int[][] grid, int sr, int sc, int[][] dir) {
+
+        grid[sr][sc] = 0;
+
+        for (int d = 0; d < 4; d++) {
+            int r = sr + dir[d][0];
+            int c = sc + dir[d][1];
+
+            if (r >= 0 && c >= 0 && r < grid.length && c < grid[0].length && grid[r][c] == 1) {
+                dfs(grid, r, c, dir);
+            }
+        }
+    }
+
     // 08/July/2021******************************************************************************************************
 
     // 694. Number of Distinct Islands
@@ -235,8 +274,10 @@ public class DFSQuestions_02 {
 
     public boolean dfs_subIs(int[][] grid2, int[][] grid1, int r, int c, int n, int m) {
 
-        if (r < 0 || c < 0 || r == n || c == m || grid2[r][c] == 0) return true;
-        if (grid1[r][c] == 0) return false;
+        if (r < 0 || c < 0 || r == n || c == m || grid2[r][c] == 0)
+            return true;
+        if (grid1[r][c] == 0)
+            return false;
 
         grid2[r][c] = 0;
 

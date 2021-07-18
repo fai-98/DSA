@@ -96,6 +96,46 @@ public class BFSQues {
     }
 
     // 1091. Shortest Path in Binary Matrix
+    public int shortestPathBinaryMatrix(int[][] grid) {
+
+        int[][] dir = { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, -1 }, { 1, -1 }, { -1, 1 }, { 1, 1 } };
+
+        int n = grid.length, m = grid[0].length, path = 1;
+
+        if (grid[0][0] == 1 || grid[n - 1][m - 1] == 1)
+            return -1;
+
+        if (n == 1 && m == 1 && grid[0][0] == 0)
+            return 1;
+
+        Queue<Integer> q = new ArrayDeque<>();
+        q.offer(0 * m + 0);
+        while (q.size() > 0) {
+            int size = q.size();
+            while (size-- > 0) {
+                int remIdx = q.poll();
+                int r = remIdx / m;
+                int c = remIdx % m;
+
+                if (r == n - 1 && c == m - 1)
+                    return path;
+
+                for (int d = 0; d < 8; d++) {
+                    int R = r + dir[d][0];
+                    int C = c + dir[d][1];
+
+                    if (R >= 0 && C >= 0 && R < n && C < m && grid[R][C] == 0) {
+                        grid[R][C] = 2;
+                        q.offer(R * m + C);
+
+                    }
+                }
+            }
+            path++;
+        }
+
+        return -1;
+    }
 
     // 542. 01 Matrix
     public int[][] updateMatrix(int[][] mat) {
@@ -140,6 +180,52 @@ public class BFSQues {
         return mat;
     }
 
+    // 1162. As Far from Land as Possible (Exactly Same as 542. 01 Matrix )
+
+    public int maxDistance(int[][] grid) {
+        int n = grid.length, m = grid[0].length, dist = 1, maxDist = -(int) 1e9;
+        Queue<Integer> q = new ArrayDeque<>();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    q.offer(i * m + j);
+                }
+            }
+        }
+
+        int[][] dir = { { -1, 0 }, { 0, -1 }, { 1, 0 }, { 0, 1 } };
+
+        while (q.size() > 0) {
+            int size = q.size();
+            while (size-- > 0) {
+
+                // remIdx (st point land)
+                // dist from land to land is 0
+                int rIdx = q.poll();
+                int sr = rIdx / m;
+                int sc = rIdx % m;
+
+                for (int d = 0; d < 4; d++) {
+                    int r = sr + dir[d][0];
+                    int c = sc + dir[d][1];
+
+                    // (mark* & add ) -> here mark* means store dist , any val other than 0
+                    // helps us to mark the cell as vis , only 0 cells are added to que
+                    if (r >= 0 && c >= 0 && r < n && c < m && grid[r][c] == 0) {
+                        grid[r][c] = dist;
+                        maxDist = Math.max(dist, maxDist);
+                        q.offer(r * m + c);
+                    }
+                }
+            }
+            dist++;
+        }
+
+        return maxDist == -(int) 1e9 ? -1 : maxDist;
+
+    }
+
     // 286. Walls And Gates
     public void wallsAndGates(int[][] rooms) {
         int INF = 2147483647;
@@ -180,7 +266,6 @@ public class BFSQues {
             }
             dist++;
         }
-
     }
 
 }
