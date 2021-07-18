@@ -20,11 +20,11 @@ public class UnionFindQues {
     static int[] par, size;
 
     public static int findPar(int u) {
-        // if (par[u] == u)
-        //     return u;
-        // return par[u] = findPar(par[u]);
+        if (par[u] == u)
+            return u;
+        return par[u] = findPar(par[u]);
 
-        return par[u] = par[u] == u ? u : findPar(par[u]);
+        // return par[u] == u ? u : par[u] = find(par[u]);
     }
 
     public static void union(int p1, int p2) {
@@ -52,7 +52,7 @@ public class UnionFindQues {
         }
 
         for (int i = 0; i < S.length(); i++) {
-            res += (char) (findPar(S.charAt(i) - 'a') + 'a');
+            S += (char) findPar(S.charAt(i));
         }
 
         return res;
