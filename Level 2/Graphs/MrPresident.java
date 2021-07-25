@@ -1,36 +1,31 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.io.*;
+import java.util.*;
 
-// Warning: Printing unwanted or ill-formatted data to output will cause the test cases to fail
+public class MrPresident {
 
-class MrPresident {
-    public static void main(String args[]) throws Exception {
+    static long mod = (long) (1e9 + 7);
 
-        BufferedReader s = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        PrintWriter out = new PrintWriter(System.out);
 
-        String[] line = s.readLine().split(" ");
-        int N = Integer.parseInt(line[0]);
-        int M = Integer.parseInt(line[1]);
-        long K = Integer.parseInt(line[2]);
+        int N = sc.ni();
+        int M = sc.ni();
+        long K = sc.nl();
 
         int[][] edges = new int[M][3];
 
         for (int i = 0; i < M; i++) {
-            String[] li = s.readLine().split(" ");
-            edges[i][0] = Integer.parseInt(li[0]);
-            edges[i][1] = Integer.parseInt(li[1]);
-            edges[i][2] = Integer.parseInt(li[2]);
+            edges[i][0] = sc.ni();
+            edges[i][1] = sc.ni();
+            edges[i][2] = sc.ni();
         }
 
         int res = mrPresident(edges, N, K);
-        System.out.println(res);
-
+        out.print(res);
+        out.close();
     }
+
     static int[] par;
 
     public static int mrPresident(int[][] edges, int N, long K) {
@@ -72,10 +67,69 @@ class MrPresident {
         return mcost <= K ? superroad : -1;
     }
 
-
     public static int findPar(int u) {
         if (par[u] == u)
             return u;
         return par[u] = findPar(par[u]);
+    }
+
+    static class Scanner {
+
+        StringTokenizer st;
+        BufferedReader br;
+
+        public Scanner(InputStream s) {
+            br = new BufferedReader(new InputStreamReader(s));
+        }
+
+        public String next() throws IOException {
+            while (st == null || !st.hasMoreTokens())
+                st = new StringTokenizer(br.readLine());
+            return st.nextToken();
+        }
+
+        public int ni() throws IOException {
+            return Integer.parseInt(next());
+        }
+
+        public long nl() throws IOException {
+            return Long.parseLong(next());
+        }
+
+        public int[] nia(int n) throws IOException {
+            int a[] = new int[n];
+            String sa[] = br.readLine().split(" ");
+            for (int i = 0; i < n; i++)
+                a[i] = Integer.parseInt(sa[i]);
+            return a;
+        }
+
+        public long[] nla(int n) throws IOException {
+            long a[] = new long[n];
+            String sa[] = br.readLine().split(" ");
+            for (int i = 0; i < n; i++)
+                a[i] = Long.parseLong(sa[i]);
+            return a;
+        }
+
+        public int[] sort(int[] a) {
+            ArrayList<Integer> l = new ArrayList<>();
+            for (int v : a)
+                l.add(v);
+            Collections.sort(l);
+            for (int i = 0; i < a.length; i++)
+                a[i] = l.get(i);
+            return a;
+        }
+
+        public long[] sort(long[] a) {
+            ArrayList<Long> l = new ArrayList<>();
+            for (long v : a)
+                l.add(v);
+            Collections.sort(l);
+            for (int i = 0; i < a.length; i++)
+                a[i] = l.get(i);
+            return a;
+        }
     }
 }
