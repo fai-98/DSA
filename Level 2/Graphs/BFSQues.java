@@ -268,4 +268,63 @@ public class BFSQues {
         }
     }
 
+    // 815. Bus Routes
+
+    public int numBusesToDestination(int[][] routes, int source, int target) {
+        if (source == target)
+            return 0;
+        // bus No. to stop mapping given in routes
+        // make busStop to busNo mapping
+        HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
+
+        // i = busNumber , j = busStop mapping <j,i>/<stop,busNo>
+        for (int i = 0; i < routes.length; i++) {
+            for (int j = 0; j < routes[i].length; j++) {
+                int busStop = routes[i][j];
+                map.putIfAbsent(busStop, new ArrayList<>());
+                map.get(busStop).add(i);
+            }
+        }
+
+        boolean[] busStopVis = new boolean[(int) 1e6];
+        boolean[] busNumberVis = new boolean[routes.length];
+
+        LinkedList<Integer> q = new LinkedList<>();
+        // queue contains vertices i.e busStops not busNo
+        q.addLast(source);
+        busStopVis[source] = true;
+        int level = 0;
+        while (q.size() > 0) {
+            int size = q.size();
+            while (size-- > 0) {
+                int remStop = q.removeFirst();
+                // now the busNums we can take from here
+                ArrayList<Integer> busNums = map.get(remStop);
+
+                // mark* + add*
+                for (int bus : busNums) {
+                    if (busNumberVis[bus])
+                        continue;
+                    // getStops
+                    for (int nextStop : routes[bus]) {
+
+                        if (!busStopVis[nextStop]) {
+                            q.addLast(nextStop);
+                            busStopVis[nextStop] = true;
+                            // ans found
+                            if (nextStop == target)
+                                return level + 1;
+                        }
+                    }
+                    busNumberVis[bus] = true; // this bus and all related stops are processed
+                }
+            }
+
+            level++;
+        }
+
+        return -1;
+
+    }
+
 }

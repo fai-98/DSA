@@ -170,6 +170,53 @@ public class UnionFindQues {
         return new int[] { 0, 0 };
     }
 
+    // 959. Regions Cut By Slashes
+
+    public int regionsBySlashes(String[] grid) {
+        int n = grid.length, regions = 1;
+        // 2d as 1d
+        int m = n + 1;
+        par = new int[m * m];
+        // init all bundary idx in same set
+        for (int i = 0; i < par.length; i++) {
+            // row/col in 2d
+            par[i] = i; // diff par
+
+            int r = i / m, c = i % m;
+            if (r == 0 || r == m - 1 || c == 0 || c == m - 1)
+                par[i] = 0;
+        }
+
+        /*
+         * for ease int x1 = i, y1 = j + 1; int x2 = i + 1, y2 = j; int idx1 = x1 * m +
+         * y1; int idx2 = x2 * m + y2; int p1 = findPar(idx1); int p2 = findPar(idx2);
+         */
+
+        for (int i = 0; i < n; i++) {
+            String s = grid[i];
+            for (int j = 0; j < n; j++) {
+                if (s.charAt(j) == '/') {
+                    int p1 = findPar(i * m + (j + 1));
+                    int p2 = findPar((i + 1) * m + j);
+                    if (p1 != p2) {
+                        par[p1] = p2;
+                    } else
+                        regions++;
+                } else if (s.charAt(j) == '\\') {
+                    int p1 = findPar(i * m + j);
+                    int p2 = findPar((i + 1) * m + j + 1);
+                    if (p1 != p2) {
+                        par[p1] = p2;
+                    } else
+                        regions++;
+                }
+            }
+        }
+        return regions;
+    }
+
+    // 685. Redundant Connection II
+
     public static void main(String args[]) {
         String a = "parker";
         String b = "morris";
@@ -178,4 +225,5 @@ public class UnionFindQues {
         String ans = smallestEquivalentString(a, b, s);
         System.out.println(ans);
     }
+
 }

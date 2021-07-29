@@ -102,6 +102,120 @@ public class TreeConstructSet {
 		return root;
 	}
 
-	// Serialize a Binary Tree -> preorder serialize
+	// 297. Serialize and Deserialize Binary Tree -> preorder serialize
+	public String serialize_bt(TreeNode root) {
+		StringBuilder sb = new StringBuilder();
+		serialize_(root, sb);
+		return sb.toString();
+	}
+
+	public void serialize_(TreeNode root, StringBuilder sb) {
+		if (root == null) {
+			sb.append("null ");
+			return;
+		}
+		sb.append(root.val + " ");
+		serialize_(root.left, sb);
+		serialize_(root.right, sb);
+		return;
+	}
+
+	// Decodes your encoded data to tree.
+	public TreeNode deserialize_bt(String data) {
+		// System.out.println(data);
+		String[] pre = data.split(" ");
+		return build(pre, new int[] { 0 });
+
+	}
+
+	public TreeNode build(String[] pre, int[] idx) {
+		if (idx[0] == pre.length || pre[idx[0]].equals("null")) {
+			idx[0]++;
+			return null;
+		}
+
+		TreeNode root = new TreeNode(Integer.parseInt(pre[idx[0]++]));
+
+		root.left = build(pre, idx);
+		root.right = build(pre, idx);
+
+		return root;
+	}
+
+	// 297 Queue Implementation
+	public TreeNode deserialize_que(String data) {
+		String[] pre = data.split(",");
+		Queue<String> q = new LinkedList<>();
+		q.addAll(Arrays.asList(pre));
+		return build(q);
+	}
+
+	public TreeNode build(Queue<String> q) {
+		if (q.isEmpty())
+			return null;
+		String ele = q.poll();
+		if (ele.equals("#")) {
+			return null;
+		}
+
+		int val = Integer.parseInt(ele);
+		TreeNode node = new TreeNode(val);
+
+		node.left = build(q);
+		node.right = build(q);
+
+		return node;
+	}
+
+	// 449. Serialize and Deserialize BST
+	// dont use inorder serialize , it loses the exact same config
+	// use preOrder serialise + BST property (using lower bound and upper b )
+	// init.. lb = -INF , up = INF
+	public String serialize(TreeNode root) {
+		StringBuilder sb = new StringBuilder();
+		serialize_preOrder(sb, root);
+		return sb.toString();
+	}
+
+	public void serialize_preOrder(StringBuilder sb, TreeNode root) {
+		if (root == null)
+			return;
+		sb.append(root.val + ",");
+		serialize_preOrder(sb, root.left);
+		serialize_preOrder(sb, root.right);
+	}
+
+	// Decodes your encoded data to tree.
+	// Simple Construct BST from Pre gives exact config , init.. lb = -INF , ub =
+	// INF , use code of construct bst from inorder
+	// if use Queue instead of Array , static arr idx is avoided
+	public TreeNode deserialize(String data) {
+		if (data.isEmpty())
+			return null;
+		String[] pre = data.split(",");
+		int[] idx = new int[1];
+		int lb = -(int) 1e9, ub = (int) 1e9;
+		return deserialize_(pre, lb, ub, idx);
+	}
+
+	public TreeNode deserialize_(String[] pre, int lb, int ub, int[] idx) {
+		if (idx[0] == pre.length) {
+			return null;
+		}
+
+		int val = Integer.parseInt(pre[idx[0]]);
+
+		if (val < lb || val > ub)
+			return null;
+
+		idx[0]++;
+
+		TreeNode node = new TreeNode(val);
+
+		node.left = deserialize_(pre, lb, val, idx);
+		node.right = deserialize_(pre, val, ub, idx);
+
+		return node;
+	}
 
 }

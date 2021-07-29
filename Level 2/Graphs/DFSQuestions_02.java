@@ -1,6 +1,21 @@
 import java.util.HashSet;
+import java.util.*;
+import java.util.ArrayList;
 
 public class DFSQuestions_02 {
+
+    public class Pair {
+        String v;
+        double wt;
+
+        Pair() {
+        }
+
+        Pair(String v, double wt) {
+            this.v = v;
+            this.wt = wt;
+        }
+    }
 
     // #200numberOfIsland
     public int numIslands(char[][] grid) {
@@ -287,6 +302,72 @@ public class DFSQuestions_02 {
         boolean rt = dfs_subIs(grid2, grid1, r, c + 1, n, m);
 
         return t && l && d && rt;
+    }
+
+    // 399. Evaluate Division
+
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+
+        int n = values.length;
+        Map<String, ArrayList<Pair>> map = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            List<String> eqn = equations.get(i);
+            String u = eqn.get(0);
+            String v = eqn.get(1);
+            double wt = values[i];
+
+            if (!map.containsKey(u)) {
+                map.put(u, new ArrayList<>());
+            }
+
+            if (!map.containsKey(v)) {
+                map.put(v, new ArrayList<>());
+            }
+
+            Pair p1 = new Pair(v, wt);
+            Pair p2 = new Pair(u, 1.0 / wt);
+            map.get(u).add(p1);
+            map.get(v).add(p2);
+
+        }
+
+        for (String key : map.keySet()) {
+            for (var pair : map.get(key)) {
+                System.out.print(key + " - " + pair.v + " - " + pair.wt);
+            }
+            System.out.println();
+        }
+
+        double[] res = new double[queries.size()];
+        int idx = 0;
+        // solve queries using BFS or DFS
+        for (var query : queries) {
+            String src = query.get(0);
+            String dest = query.get(1);
+
+            if (!map.containsKey(src) || !map.containsKey(dest)) {
+                res[idx++] = -1.0;
+            } else
+                res[idx++] = dfs(map, new HashSet<>(), src, dest, 1);
+        }
+
+        return res;
+    }
+
+    public double dfs(Map<String, ArrayList<Pair>> graph, Set<String> vis, String src, String des, double r) {
+        if (!graph.containsKey(src) || !vis.add(src))
+            return -1;
+
+        if (src.equals(des))
+            return r;
+
+        for (Pair p : graph.get(src)) {
+            double result = dfs(graph, vis, p.v, des, r * p.wt);
+            if (result != -1)
+                return result;
+        }
+        return -1;
     }
 
 }
