@@ -79,6 +79,7 @@ public class GraphAlgorithms {
 
     // Kruskal's Algo
     // ******************************************************************************************
+    // T : O(ElogE)
     // edges (u,v,wt) , sort on basis of weight
     public static void kruskalAlgo(int[][] edges, int N) {
         Arrays.sort(edges, (a, b) -> {

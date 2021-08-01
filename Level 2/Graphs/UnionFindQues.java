@@ -89,10 +89,9 @@ public class UnionFindQues {
                             int nbrIdx = r * m + c;
                             int p2 = findPar(nbrIdx);
 
-                            // belongs to diff set , so merge and size inc
                             if (p1 != p2) {
-                                par[p1] = p2;
-                                size[p2] += size[p1];
+                                par[p2] = p1;
+                                size[p1] += size[p2];
                             }
 
                         }
@@ -215,7 +214,70 @@ public class UnionFindQues {
         return regions;
     }
 
-    // 685. Redundant Connection II
+    // 685. Redundant Connection II (VVI )
+    // 3 Cases
+
+    public int[] findRedundantDirectedConnection(int[][] edges) {
+        int n = edges.length, skipIdx = -1;
+        par = new int[n + 1];
+
+        int[] par1 = { -1, -1 }, par2 = { -1, -1 };
+        // 2nd par edge /or first in one case
+        for (int i = 0; i < edges.length; i++) {
+            int[] edge = edges[i];
+            int u = edge[0];
+            int v = edge[1];
+
+            // if no par
+            if (par[v] == 0)
+                par[v] = u;
+            else {
+                par2 = new int[] { u, v };
+                par1 = new int[] { par[v], v };
+
+                skipIdx = i;
+            }
+
+        }
+
+        // reset par[] array
+        for (int i = 0; i < par.length; i++)
+            par[i] = i;
+
+        // Apply Union Find skipping 2nd parent Node
+        // if still cycle then 2 cases arise
+        boolean cycle = false;
+        for (int i = 0; i < edges.length; i++) {
+
+            if (i == skipIdx)
+                continue;
+
+            int[] edge = edges[i];
+            int u = edge[0];
+            int v = edge[1];
+
+            int p1 = findPar(u);
+            int p2 = findPar(v);
+
+            // no cycle union , else if(no dup par - this edge is ans) , else 2 cases
+            if (p1 != p2) {
+                par[p1] = p2;
+            } else {
+                cycle = true;
+                if (par1[0] == -1)
+                    return edge;
+            }
+        }
+
+        // 2 parents case
+        // if cycle -
+        // return cycle causing edge
+        // if no cycle return the 2nd parent edge
+
+        // if still cycle after skipping 2nd par egde -> par1 is the cycle causing edge
+        // else par2 is cycle causing edge
+        return cycle ? par1 : par2;
+    }
 
     public static void main(String args[]) {
         String a = "parker";
