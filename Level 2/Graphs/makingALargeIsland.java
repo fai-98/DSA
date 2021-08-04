@@ -28,7 +28,6 @@ class makingALargeIsland {
             for (int j = 0; j < n; j++) {
                 if (grid[i][j] == 1) {
                     int myIdx = i * n + j;
-                    int p1 = findPar(myIdx);
 
                     for (int d = 0; d < 4; d++) {
                         int r = i + dir[d][0];
@@ -36,18 +35,7 @@ class makingALargeIsland {
 
                         if (r >= 0 && c >= 0 && r < n && c < n && grid[r][c] == 1) {
                             int nbrIdx = r * n + c;
-                            int p2 = findPar(nbrIdx);
-
-                            if (p1 != p2) {
-                                if (size[p1] > size[p2]) {
-                                    par[p2] = p1;
-                                    size[p1] += size[p2];
-                                } else {
-                                    par[p1] = p2;
-                                    size[p2] += size[p1];
-                                }
-                            }
-
+                            union(myIdx, nbrIdx);
                         }
 
                     }
@@ -81,6 +69,21 @@ class makingALargeIsland {
 
 
         return hasXero ? max : n * n;
+    }
+
+    public void union(int idx1 , int idx2 ) {
+        int p1 = findPar(idx1);
+        int p2 = findPar(idx2);
+
+        if (p1 != p2) {
+            if (size[p2] < size[p1]) {
+                par[p2] = p1;
+                size[p1] += size[p2];
+            } else {
+                par[p1] = p2;
+                size[p2] += size[p1];
+            }
+        }
     }
 
     public int findPar(int u) {

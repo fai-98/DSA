@@ -49,6 +49,43 @@ public class PrimsMST {
     // }
     // }
 
+    public static class primsPair {
+        int vtx, w;
+
+        primsPair(int vtx, int w) {
+            this.vtx = vtx;
+            this.w = w;
+        }
+    }
+
+    public static void prims(ArrayList<Edge>[] graph, int src) {
+        int N = graph.length;
+        PriorityQueue<primsPair> pq = new PriorityQueue<>((a, b) -> {
+            return a.w - b.w;
+        });
+
+        int[] dis = new int[N];
+        boolean[] vis = new boolean[N];
+        Arrays.fill(dis, (int) 1e9);
+
+        dis[src] = 0;
+        pq.add(new primsPair(src, 0));
+        while (pq.size() != 0) {
+            primsPair p = pq.remove();
+
+            if (vis[p.vtx])
+                continue;
+
+            vis[p.vtx] = true;
+            for (Edge e : graph[p.vtx]) {
+                if (vis[e.v] && e.w < dis[e.v]) {
+                    dis[e.v] = e.w;
+                    pq.add(new primsPair(e.v, e.w));
+                }
+            }
+        }
+    }
+
     public static void minSpanningTree(ArrayList<Edge>[] graph) {
         boolean[] vis = new boolean[graph.length];
         PriorityQueue<Pair> pq = new PriorityQueue<>();
