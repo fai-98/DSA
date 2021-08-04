@@ -3,6 +3,7 @@ import java.util.*;
 import java.util.ArrayList;
 
 class CheapestFlight {
+    // Dijkstra's Algorithm : Greedy
     public int findCheapestPrice(int n, int[][] flights, int st, int dst, int k) {
         // {v,w}
         ArrayList<int[]>[] graph = new ArrayList[n + 1];
@@ -45,5 +46,37 @@ class CheapestFlight {
 
         return -1;
 
+    }
+
+    //Bellman-Ford Algorithm DP
+    // T : O( k(V+E) ) , k times -stops , V for copying arr , E for looping all edges
+    public int findCheapestPriceDP(int n, int[][] flights, int src, int dst, int k) {
+        int[] prev = new int[n];
+        Arrays.fill(prev, (int) 1e9);
+        prev[src] = 0;
+
+        // prev[] path with edges <=i-1
+        // curr[] path with edges <=i
+        int edges = k + 1;
+
+        for (int i = 1; i <= edges; i++) {
+            int[] curr = prev.clone();
+            boolean anyUpdate = false;
+            for (int j = 0; j < flights.length; j++) {
+                int[] edge = flights[j];
+                int u = edge[0], v = edge[1], wt = edge[2];
+
+                if (prev[u] == (int) 1e9) continue;
+
+                if (prev[u] + wt < curr[v]) {
+                    curr[v] = prev[u] + wt;
+                    anyUpdate = true;
+                }
+            }
+            if (!anyUpdate)break;
+            prev = curr;
+        }
+
+        return prev[dst] == (int) 1e9 ? -1 : prev[dst];
     }
 }
