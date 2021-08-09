@@ -1,45 +1,52 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
 class bellmanFord {
 
 	// time complexity of Bellman-Ford is O(VE)
-	public int bellmanFordAlgo(int n, int[][] edges, int src) {
+	// using only 1 array
+	public void bellmanFordAlgo(int n, int[][] edges, int src) {
 		// n vertices
 		int[] path = new int[n];
-		Arrays.fill(path, (int)1e9);
+		Arrays.fill(path, (int) 1e9);
 		path[src] = 0;
 
-		//(V-1) times
+		// (V-1) times
 		for (int i = 0; i < n - 1; i++) {
-			for (int j = 0; j < edges.length; j++) { //for E edges
+			for (int j = 0; j < edges.length; j++) { // for E edges
 				int u = edges[j][0];
 				int v = edges[j][1];
 				int w = edges[j][2];
 
-				if (path[u] == (int)1e9) {
+				if (path[u] == (int) 1e9) {
 					continue;
 				} else if (path[u] + w < path[v]) {
 					path[v] = path[u] + w;
 				}
 			}
 		}
-		//now all the idx of path have the shortest path for vtx == idx , if INF -> no path exists
-		//negative wt cycle detection , run same loop for 1 more time i.e Vth time
+		// now all the idx of path have the shortest path for vtx == idx , if INF -> no
+		// path exists
+		// negative wt cycle detection , run same loop for 1 more time i.e Vth time
 		boolean negativeCycle = false;
 
-		for (int j = 0; j < edges.length; j++) { //for E edges
+		for (int j = 0; j < edges.length; j++) { // for E edges
 			int u = edges[j][0];
 			int v = edges[j][1];
 			int w = edges[j][2];
 
-			if (path[u] == (int)1e9) {
+			if (path[u] == (int) 1e9) {
 				continue;
 			} else if (path[u] + w < path[v]) {
-				negativeCycle = true; //path still getting updated -> path with V edges possible
+				negativeCycle = true; // path still getting updated -> path with V edges possible
 			}
 		}
 
 	}
 
-	public static void bellmanFordAlgo(int N, int[][] edges, int src) {
+	// using 2 arrays , using 2 arrays , for some ques prev method dont work , ex
+	// cheapest flights
+	public static void bellmanFordAlgo_(int N, int[][] edges, int src) {
 		int[] prev = new int[N];
 
 		Arrays.fill(prev, (int) 1e9);
