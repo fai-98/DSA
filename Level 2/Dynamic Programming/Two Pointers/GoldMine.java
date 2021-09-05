@@ -64,6 +64,33 @@ public class GoldMine {
             }
         }
 
+        public static void printPath(int[][] dp) {
+            int n = dp.length , m = dp[0].length , R = -1, C = -1;
+
+            int maxGold = 0;
+            for (int r = 0, c = 0; r < n; r++) {
+                if (dp[r][c] > maxGold) {
+                    R = r;
+                    C = c;
+                }
+            }
+
+            int sr = R , sc = C , gold = dp[R][C];
+            int[][] dir = {{ -1, 1}, {0, 1}, {1, 1}};
+
+            while (c < m) {
+                System.out.println(sr + " , " + sc);
+                for (int d = 0; d < 3; d++) {
+                    int r = sr + dir[d][0];
+                    int c = sc + dir[d][1];
+                    if (r >= 0 && r < n && c < m) {
+
+                    }
+                }
+            }
+
+        }
+
 
         int max = -(int) 1e9;
         for (int i = 0; i < n; i++) {
