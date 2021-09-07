@@ -7,9 +7,10 @@ public class Wildcard_Matching {
 		p = compress(p);
 		int n = s.length(), m = p.length();
 		int[][] dp = new int[n + 1][m + 1];
-		for (int[] d : dp) Arrays.fill(d, -1);
+		// for (int[] d : dp) Arrays.fill(d, -1);
 
-		boolean res  = isMatch_memo(s, n, p, m, dp) == 1;
+		// boolean res  = isMatch_memo(s, n, p, m, dp) == 1;
+		boolean res = isMatch_tab(s, n, p, m, dp);
 		display(dp);
 		return res;
 	}
@@ -88,8 +89,38 @@ public class Wildcard_Matching {
 		}
 	}
 
-	public static int isMatch_tab(String s , int n , String p , int m , int[][] dp) {
+	public static boolean isMatch_tab(String s , int N , String p , int M , int[][] dp) {
+		// dp[n+1][m+1]
+		for (int n = 0; n <= N; n++) {
+			for (int m = 0; m <= M; m++) {
+				if (n == 0 || m == 0) {
+					if (n == 0 && m == 0) {
+						dp[n][m] = 1;
+						continue;
+					} else if (m == 1 && p.charAt(m - 1) == '*') {
+						dp[n][m] = 1 ;
+						continue;
+					} else {
+						dp[n][m] = 0;
+						continue;
+					}
+				}
 
+				char ch1 = s.charAt(n - 1);
+				char ch2 = p.charAt(m - 1);
+
+				if (ch1 == ch2 || ch2 == '?') {
+					dp[n][m] = dp[n - 1][m - 1];
+				} else if (ch2 == '*') {
+					dp[n][m] = (dp[n - 1][m] == 1 || dp[n][m - 1] == 1) ? 1 : 0;
+				} else {
+					dp[n][m] = 0;
+				}
+
+			}
+		}
+
+		return dp[N][M] == 1;
 	}
 
 	public static void main(String[] args) {
