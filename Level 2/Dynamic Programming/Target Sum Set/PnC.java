@@ -1,4 +1,4 @@
-public class CoinChangePnC {
+public class PnC {
 
 
 	// Combination Recursive
@@ -75,8 +75,10 @@ public class CoinChangePnC {
 	}
 
 	public static void main(String[] args) {
-		int S = 10;
-		int coin[] = { 2, 3, 5, 7 };
+		// int S = 10;
+		int S = 5;
+		// int coin[] = { 2, 3, 5, 7 };
+		int coin[] = { 1, 2 };
 		int n = coin.length;
 		System.out.println(coinChange(S, n,  coin));
 		System.out.println(permute(coin, S));

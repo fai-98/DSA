@@ -9,7 +9,7 @@ public class boolean_parenthesization {
 
 		bpair() {}
 
-		bpair(int t , int f) {
+		bpair(int tCount , int fCount) {
 			this.tCount = tCount;
 			this.fCount = fCount;
 		}
@@ -17,23 +17,22 @@ public class boolean_parenthesization {
 	}
 
 	//ans+=  ... add to ans - the total count/ways to make T/F exp from all possible cuts
-	public static void eval(bpair lp , bpair rp , char opr , bpair ans) {
-		int totalTF = (lp.tCount + lp.fCount) * (rp.tCount + rp.fCount);
-		if (opr == '|') {
-			int fCount = (lp.fCount * rp.fCount);
-			ans.tCount += totalTF - fCount;
+	public static void eval(bpair left, bpair right, char oper, bpair ans) {
+		int mod = 1003;
+		int totalTF = ((left.tCount + left.fCount) % mod * (right.tCount + right.fCount) % mod) % mod;
+		if (oper == '|') {
+			int fCount = (left.fCount % mod * right.fCount % mod) % mod;
 			ans.fCount += fCount;
-		} else if (opr == '&') {
-			int tCount = lp.tCount * rp.tCount;
+			ans.tCount += (totalTF - fCount + mod) % mod;
+		} else if (oper == '&') {
+			int tCount = (left.tCount % mod * right.tCount % mod) % mod;
 			ans.tCount += tCount;
-			ans.fCount += totalTF - tCount;
-		} else { //XOR ^
-			int tCount = (lp.tCount * rp.fCount) + (lp.fCount * rp.tCount);
-			ans.tCount += tCount ;
-			ans.fCount += totalTF - tCount;
+			ans.fCount += (totalTF - tCount + mod) % mod;
+		} else {
+			int tCount = ((left.tCount % mod * right.fCount % mod) % mod + (left.fCount % mod * right.tCount % mod) % mod) % mod;
+			ans.tCount += tCount;
+			ans.fCount += (totalTF - tCount + mod) % mod;
 		}
-
-		// System.out.println(ans.tCount + " - " + ans.fCount);
 	}
 
 	public static bpair countWays(String s , int si, int ei , bpair[][] dp) {
@@ -66,13 +65,65 @@ public class boolean_parenthesization {
 
 	//3D DP approach using dp[n][n][2] - [si][ei][t/f count]
 
+	public static void calc(int[] lRes , int[] rRes , char opr , int[] ans) {
+		int tf = (lRes[0] + lRes[1]) * (rRes[0] * rRes[1]);
+
+		if (opr == '|') {
+			int f = lRes[1] * rRes[1];
+			ans[0] += tf - f;
+			ans[1] += f;
+		} else if (opr == '&') {
+			int t = lRes[0] * rRes[0];
+			ans[0] += t;
+			ans[1] += tf - t;
+		} else {
+			int t = (lRes[0] * rRes[1]) + (lRes[1] * rRes[0]);
+			ans[0] += t;
+			ans[1] += tf - t;
+		}
+
+	}
+
+
+	//has errors
+	public static int[] countWays_3d(String s , int si, int ei , int[][][] dp) {
+
+		if (si == ei) {
+			dp[si][ei][0] = s.charAt(si) == 'T' ? 1 : 0; //true
+			dp[si][ei][1] = s.charAt(si) == 'F' ? 1 : 0; //false
+
+			return dp[si][ei];
+		}
+
+		// if (dp[si][ei][0] != 0 || dp[si][ei][1] != 0) {
+		// 	return dp[si][ei];
+		// }
+
+		int[] myRes = new int[2];
+		for (int cut = si + 1; cut < ei; cut += 2) {
+			int[] lRes = countWays_3d(s, si, cut - 1, dp);
+			int[] rRes = countWays_3d(s, cut + 1, ei, dp);
+
+			char opr = s.charAt(cut);
+			calc(lRes, rRes, opr, myRes);
+		}
+
+		return dp[si][ei] = myRes;
+	}
+
 	public static void main(String[] args) {
 		// String exp = "T^F|F";
 		String exp = "T|T&F^T";
+		// String exp = "T^F&T";
 		int n = exp.length();
-		bpair[][] dp = new bpair[n][n];
-		bpair ans = countWays(exp, 0, n - 1, dp);
-		System.out.println(ans.tCount + " ---- " + ans.fCount);
+		// bpair[][] dp = new bpair[n][n];
+		// bpair ans = countWays(exp, 0, n - 1, dp);
+		// int tc = ans.tCount % 1003;
+
+		int[][][] dp = new int[n][n][2];
+		int[] ans = countWays_3d(exp, 0, n - 1, dp);
+		// System.out.println(tc);
+		System.out.println(ans[0] + " ---- " + ans[1]);
 	}
 
 }
