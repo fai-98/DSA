@@ -1,0 +1,3 @@
+class concatenated_words {
+
+}
