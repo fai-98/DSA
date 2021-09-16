@@ -116,14 +116,14 @@ public class boolean_parenthesization {
 		String exp = "T|T&F^T";
 		// String exp = "T^F&T";
 		int n = exp.length();
-		// bpair[][] dp = new bpair[n][n];
-		// bpair ans = countWays(exp, 0, n - 1, dp);
-		// int tc = ans.tCount % 1003;
+		bpair[][] dp = new bpair[n][n];
+		bpair ans = countWays(exp, 0, n - 1, dp);
+		int tc = ans.tCount % 1003;
 
-		int[][][] dp = new int[n][n][2];
-		int[] ans = countWays_3d(exp, 0, n - 1, dp);
-		// System.out.println(tc);
-		System.out.println(ans[0] + " ---- " + ans[1]);
+		// int[][][] dp = new int[n][n][2];
+		// int[] ans = countWays_3d(exp, 0, n - 1, dp);
+		System.out.println(tc);
+		// System.out.println(ans[0] + " ---- " + ans[1]);
 	}
 
 }

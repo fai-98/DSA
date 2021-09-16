@@ -93,12 +93,12 @@ public class MCM_CutSet {
 
 
 	public static void mcmSet() {
-		int arr[] = new int[] { 4, 2, 3, 1, 3 };
-		// int arr[] = new int[] { 1, 2, 3, 4, 3 };
+		// int arr[] = new int[] { 4, 2, 3, 1, 3 };
+		int arr[] = new int[] { 5, 2, 1, 6 };
 		int n = arr.length;
 		int[][] dp = new int[n][n];
 		// System.out.println(mcm_tab(arr, 0, n - 1, dp));
-		System.out.println(mcm_String(arr, 0, n - 1, dp));
+		// System.out.println(mcm_String(arr, 0, n - 1, dp));
 		// for (int[] d : dp)Arrays.fill(d, -1);
 		// System.out.println(mcm_tab(arr, 0, n - 1, dp));
 		// display(dp);
