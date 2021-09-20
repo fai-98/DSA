@@ -94,221 +94,6 @@ public class arrays_and_strings {
 	// k is at n-1 (largest val) , largest val will be given by least(-ve) val or most +ve val
 
 
-
-	// ... Moore's Voting Algorithm ***********************************************
-
-
-	// 169. Majority Element  ( >N/2 times)
-	public int majorityElement(int[] nums) {
-		int cand = nums[0], ct = 1;
-		for (int i = 1; i < nums.length; i++) {
-			int ele = nums[i];
-
-			if (ele == cand) {
-				ct++;
-			} else {
-				if (ct > 0) {
-					//pair up with the cand
-					ct--;
-				} else { //all prev ele are paired up
-					//start a new candidate
-					cand = ele;
-					ct = 1;
-				}
-			}
-		}
-
-		//if majority element exists , its definitely = cand
-		//follow up if no maj ele exists , return -1;
-		int count = 0;
-		for (int ele : nums) {
-			if (ele == cand) count++;
-		}
-
-		return count > nums.length / 2 ? cand : -1;
-	}
-
-	//alternative
-	public int majorityElement(int[] nums) {
-		int candidate = 0;
-		int votes = 0;
-		for (int num : nums) {
-			if (votes == 0)candidate = num;
-			if (candidate == num)votes++;
-			else votes--;
-		}
-		return candidate;
-	}
-
-
-	// 229. Majority Element II  (  >N/3 times )
-	public List<Integer> majorityElement(int[] nums) {
-		//make pairs of 3 ele together
-		int val1 = nums[0] , count1 = 1, val2 = 1, count2 = 0 , n = nums.length;
-
-		for (int i = 1; i < n; i++) {
-			if (nums[i] == val1) {
-				count1++;
-			} else if (nums[i] == val2) {
-				count2++;
-			} else {
-				if (count1 == 0) { //set new candidate
-					val1 = nums[i];
-					count1 = 1;
-				} else if (count2 == 0) { //set new candidate
-					val2 = nums[i];
-					count2 = 1;
-				} else {    //pair up
-					count1--;
-					count2--;
-				}
-			}
-		}
-
-		//check validity
-		int freq1 = 0 , freq2 = 0;
-		for (int ele : nums) {
-			if (ele == val1)
-				freq1++;
-			else if (ele == val2)
-				freq2++;
-		}
-
-		List<Integer> res = new ArrayList<>();
-		if (freq1 > n / 3) res.add(val1);
-		if (freq2 > n / 3) res.add(val2);
-
-		return res;
-
-	}
-
-
-	//General >n/k times
-	// 1. using HashMap
-	// 2. using pairing of k items , using k-1 vals and counts
-	// use k-1 size arr vals and count
-
-	public List<Integer> majorityK(int[] nums , int k) {
-		int n = nums.length;
-		int[] val = new int[k - 1];
-		int[] count = new int[k - 1];
-
-
-	}
-
-
-
-	// 556. Next Greater Element III
-	public int nextGreaterElement(int n) {
-		String s = String.valueOf(n);
-		char[] num = s.toCharArray();
-
-		if (n < 10) return -1;
-		int dipIdx = findDip(num);
-		if (dipIdx == -1) return -1;
-
-		int ceilIdx = findCeil(num[dipIdx], num);
-		swap(dipIdx, ceilIdx, num);
-		reverse(num, dipIdx + 1, num.length - 1);
-
-		String res = String.valueOf(num);
-		long ans = Long.parseLong(res);
-
-		if (ans <= Integer.MAX_VALUE) {
-			return (int) ans;
-		} else {
-			return -1;
-		}
-	}
-
-	public int findDip(char[] num) {
-		int idx = -1;
-		for (int i = num.length - 2; i >= 0; i--) {
-			if (num[i] < num[i + 1]) {
-				idx = i;
-				break;
-			}
-		}
-		return idx;
-	}
-
-	public int findCeil(int dip, char[] num) {
-		int i = num.length - 1;
-		while (dip >= num[i]) {
-			i--;
-		}
-		return i;
-	}
-
-	public void swap(int dipIdx, int ceilIdx, char[] num) {
-		char temp = num[dipIdx];
-		num[dipIdx] = num[ceilIdx];
-		num[ceilIdx] = temp;
-	}
-
-	public void reverse(char[] num, int l, int r) {
-		while (l < r) {
-			swap(l, r, num);
-			l++;
-			r--;
-		}
-	}
-
-
-	// 31. Next Permutation
-	public void nextPermutation(int[] nums) {
-		int i = nums.length - 2;
-		while (i >= 0 && nums[i + 1] <= nums[i]) {
-			i--;
-		}
-		if (i >= 0) {
-			int j = nums.length - 1;
-			while (nums[j] <= nums[i]) {
-				j--;
-			}
-			swap(nums, i, j);
-		}
-		reverse(nums, i + 1);
-	}
-
-	private void reverse(int[] nums, int start) {
-		int i = start, j = nums.length - 1;
-		while (i < j) {
-			swap(nums, i, j);
-			i++;
-			j--;
-		}
-	}
-
-	private void swap(int[] nums, int i, int j) {
-		int temp = nums[i];
-		nums[i] = nums[j];
-		nums[j] = temp;
-	}
-
-
-	// 905. Sort Array By Parity
-	public int[] sortArrayByParity(int[] nums) {
-		int i = 0, j = 0;
-
-		//two way partition
-		while (j < nums.length) {
-			if (nums[j] % 2 == 0) {
-				int temp = nums[i];
-				nums[i] = nums[j];
-				nums[j] = temp;
-
-				i++;
-				j++;
-			} else {
-				j++;
-			}
-		}
-
-		return nums;
-	}
-
-
 	// 628. Maximum Product of Three Numbers
 
 	// (-)*(-)*(+) = +;
@@ -348,59 +133,6 @@ public class arrays_and_strings {
 		return Math.max(candidate1, candidate2);
 	}
 
-
-	// 769. Max Chunks To Make Sorted
-
-	//chaining tachnique
-	// imp - given nums - 0 to n-1
-	// look at the index till where impact of number is visible
-	public int maxChunksToSorted(int[] arr) {
-		int max = -(int) 1e9, chunks = 0;
-
-		for (int i = 0; i < arr.length; i++) {
-			if (arr[i] > max) {
-				max = arr[i];
-			}
-
-			if (i == max) {
-				chunks++;
-				max = arr[i];
-			}
-		}
-
-		return chunks;
-	}
-
-	// 768. Max Chunks To Make Sorted II
-	// chunks I - impact by index
-	// chunks -II - impact by value
-
-	public int maxChunksToSorted(int[] arr) {
-		int n = arr.length, chunks = 1;
-		int[] leftMax = new int[n]; //left max
-		int[] righttMin = new int[n]; //right min
-
-		//the max of left chunk will always be <= min of right chunk
-
-		leftMax[0] = arr[0];
-		righttMin[n - 1] = arr[n - 1];
-
-		for (int i = 1; i < n; i++) {
-			leftMax[i] = Math.max(leftMax[i - 1], arr[i]);
-		}
-
-		for (int i = n - 2; i >= 0; i--) {
-			righttMin[i] = Math.min(righttMin[i + 1], arr[i]);
-		}
-
-		for (int i = 0; i < n - 1; i++) {
-			if (leftMax[i] <= righttMin[i + 1]) {
-				chunks++;
-			}
-		}
-
-		return chunks;
-	}
 
 
 	// 747. Largest Number At Least Twice of Others
@@ -461,7 +193,127 @@ public class arrays_and_strings {
 	}
 
 
+	// 795. Number of Subarrays with Bounded Maximum
 
+	// 	subarrays ending at that idx
+	// 1. if( valid range ) i-j+1 (all prev items come once with this ele + 1 (self) (init j=0
+	// 2. if ele>R , update j = last occurence of break pt ,
+	// bcz SArrs before this pt are not allowed to combine coz max changes .  change j=i+1
+	// 3. we need subarrays after that pt
+
+
+	public int numSubarrayBoundedMax(int[] nums, int left, int right) {
+		int res = 0, si = 0, ei = 0, prev = 0;
+		// prev = no. of subarrays ending here!
+		// res = res(prev idx total sub arrs) + ending here
+		while (ei < nums.length) {
+			if (nums[ei] >= left && nums[ei] <= right) {
+				prev = ei - si + 1;
+				res = res + prev;
+			} else if (nums[ei] < left) {
+				res = res + prev; //ignoring 1 size subarray which is <left
+			} else {
+				prev = 0;
+				si = ei + 1;
+			}
+
+			ei++;
+		}
+
+		return res;
+	}
+
+
+
+
+	// leetcode 119. https://leetcode.com/problems/pascals-triangle-ii/
+
+
+
+	// Leetcode 41. First Missing Positive********************************************
+
+	public int firstMissingPositive(int[] nums) {
+		int n = nums.length;
+		//Step 1 . mark elements which are out of range and check if 1 exists
+		//range shd be 1..n for n size array
+		boolean one = false;
+		for (int i = 0; i < n; i++) {
+			if (nums[i] == 1)
+				one = true;
+			if (nums[i] < 1 || nums[i] > n)
+				nums[i] = 1;
+		}
+
+		//if one is not present it's 1st missing pos
+		if (!one) return 1;
+
+		//Step 2. Map value with indexes
+		for (int i = 0; i < n; i++) {
+			int idx = Math.abs(nums[i]) - 1;
+			nums[idx] = -Math.abs(nums[idx]);
+		}
+
+		//Step 3. find the res , the idx which is still +ve means idx+1 is missing
+		for (int i = 0; i < n; i++) {
+			if (nums[i] > 0) return i + 1;
+		}
+
+		//if still not found -> all 1..n are present
+		return n + 1;
+	}
+
+	// Lintcode 912 · Best Meeting Point
+	public int minTotalDistance(int[][] grid) {
+		int n = grid.length , m = grid[0].length;
+		List<Integer> x = new ArrayList<>();
+		List<Integer> y = new ArrayList<>();
+
+		// instead of sorting after collecting x,y
+		// collect x row wise , and y column wise traversal
+
+		//collect x co-ord
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				if (grid[i][j] == 1)
+					x.add(i);
+			}
+		}
+
+		for (int j = 0; j < m; j++) {
+			for (int i = 0; i < n; i++) {
+				if (grid[i][j] == 1)
+					y.add(j);
+			}
+		}
+
+		//the best pt will lie on the median
+
+		int px = x.get(x.size() / 2);   //find median
+		int py = y.get(y.size() / 2);
+
+		int dist = 0;
+		for (int i = 0; i < x.size(); i++) {
+			dist += Math.abs(x.get(i) - px) + Math.abs(y.get(i) - py);
+		}
+
+		return dist;
+	}
+
+
+
+	// 537. Complex Number Multiplication
+	public String complexNumberMultiply(String num1, String num2) {
+		String[] s = num1.split("\\+|i", 0);
+		String[] t = num2.split("\\+|i", 0);
+		int x = Integer.parseInt(s[0]);
+		int y = Integer.parseInt(s[1]);
+		int u = Integer.parseInt(t[0]);
+		int v = Integer.parseInt(t[1]);
+
+		int real = (x * u - y * v);
+		int imaginary = (x * v + y * u);
+		return "" + real + "+" + imaginary + "i";
+	}
 
 
 
