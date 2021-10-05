@@ -179,4 +179,42 @@ public class LCSVariations {
 		return dp[N][M];
 	}
 
+
+	// 712. Minimum ASCII Delete Sum for Two Strings
+
+	public int minimumDeleteSum(String s1, String s2) {
+		int n = s1.length(), m = s2.length();
+		int[][] dp = new int[n + 1][m + 1];
+		int sum1 = 0, sum2 = 0;
+
+		for (char ch : s1.toCharArray())
+			sum1 += ch;
+
+		for (char ch : s2.toCharArray())
+			sum2 += ch;
+
+		int lcsSum = lcs_sum(s1, n, s2, m, dp);
+		System.out.println(lcsSum);
+		return sum1 + sum2 - 2 * lcsSum;
+	}
+
+	public int lcs_sum(String s, int N, String p, int M, int[][] dp) {
+		int lcs = 0;
+		for (int n = 0; n <= N; n++) {
+			for (int m = 0; m <= M; m++) {
+				if (n == 0 || m == 0) {
+					dp[n][m] = 0;
+					continue;
+				}
+
+				if (s.charAt(n - 1) == p.charAt(m - 1)) {
+					dp[n][m] = s.charAt(n - 1) + dp[n - 1][m - 1];
+				} else {
+					dp[n][m] = Math.max(dp[n - 1][m], dp[n][m - 1]);
+				}
+			}
+		}
+
+		return dp[N][M];
+	}
 }
