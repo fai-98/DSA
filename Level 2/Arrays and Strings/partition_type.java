@@ -63,6 +63,7 @@ public class partition_type {
 
 	// Leetcode 75. Sort Colors
 	//3 way partition - sort 0 , 1 ,2 (colors)
+
 	public void sortColors(int[] a) {
 		int n = a.length;
 		int lo = 0, mid = 0, hi = n - 1;
@@ -70,41 +71,6 @@ public class partition_type {
 
 		while (mid <= hi) {
 			switch (a[mid]) {
-				public int[] sortArrayByParityII(int[] nums) {
-					//segregate odd-even;
-					int n = nums.length, i = 0, j = 0;
-					int[] res = new int[n];
-
-					//two way partition   even-odd
-					while (j < nums.length) {
-						if (nums[j] % 2 == 0) {
-							int temp = nums[i];
-							nums[i] = nums[j];
-							nums[j] = temp;
-
-							i++;
-							j++;
-						} else {
-							j++;
-						}
-					}
-
-					i = 0; //even
-					j = n / 2; //odd
-					int k = 0;
-
-					while (j < n) {
-						res[k] = nums[i]; //idx even - even val
-						res[k + 1] = nums[j];
-						i++;
-						j++;
-						k += 2;
-					}
-					// return nums;
-					return res;
-				}
-
-
 			case 0: {
 				temp = a[lo];
 				a[lo] = a[mid];
@@ -129,7 +95,6 @@ public class partition_type {
 			}
 		}
 	}
-
 
 
 	// Lintcode 508 · Wiggle Sort

@@ -557,6 +557,39 @@ public class arrays_and_strings {
 
 	//O(1)
 
+	//Brute force = min(lmax,rmax)-arr[i];
+	// here only lmax-arr[i] or rmax-arr[i];
+	// how we are making sure that it's min??
+
+	// l++ only when a[l]<=a[r] -> so when curr a[l]<lmax , it's guaranteed lmax<=rmax
+	// also lmax<=rmax so, min(lmax,rmax) = lmax
+
+	public int trap(int[] arr) {
+		int n = arr.length;
+		int l = 0, r = n - 1, lmax = 0, rmax = 0, water = 0;
+
+		while (l < r) {
+			if (arr[l] <= arr[r]) {
+				if (arr[l] > lmax) {
+					lmax = arr[l];
+				} else {
+					water += lmax - arr[l];
+				}
+
+				l++;
+			} else {
+				if (arr[r] > rmax) {
+					rmax = arr[r];
+				} else {
+					water += rmax - arr[r];
+				}
+				r--;
+			}
+		}
+
+		return water;
+	}
+
 	// Leetcode 239. Sliding Window Maximum
 
 	public int[] maxSlidingWindow(int[] nums, int k) {
@@ -596,41 +629,207 @@ public class arrays_and_strings {
 	//Stack Method
 
 
+	// digit multiplier, https://practice.geeksforgeeks.org/problems/digit-multiplier3000/1
 
-	//Meeting Rooms
+	// first negative, https://practice.geeksforgeeks.org/problems/first-negative-integer-in-every-window-of-size-k3345/1
 
-	public class Interval {
-		int start;
-		int end;
-		public Interval(int start, int end) {
-			this.start = start;
-			this.end = end;
+	// Kadanes
+	// 1191. K-Concatenation Maximum Sum
+	// https://www.codechef.com/problems/KCON
+
+
+	// 152. Maximum Product Subarray
+	public int maxProduct(int[] nums) {
+		int max = -11, product = 1, len = nums.length;
+
+		//whn odd -ves either skip 1 -ve at extreme side
+		//left prod
+		for (int i = 0; i < len; i++) {
+			max = Math.max(product *= nums[i], max);
+			if (nums[i] == 0) product = 1;
 		}
-	}
-	// meeting rooms lintcode 920. https://www.lintcode.com/problem/920/
-	public boolean canAttendMeetings(List<Interval> intervals) {
-		if (intervals.size() == 0)return true;
-		Collections.sort(intervals, (Interval a, Interval b)-> {
-			return a.start - b.start;
-		});
 
-		int end1 = intervals.get(0).end;
-		for (int i = 1; i < intervals.size(); i++) {
-			int st2 = intervals.get(i).start;
-			if (st2 < end1) {
-				return false;
+		product = 1;
+		//right prod
+		for (int i = len - 1; i >= 0; i--) {
+			max = Math.max(product *= nums[i], max);
+			if (nums[i] == 0) product = 1;
+		}
+
+		return max;
+	}
+
+	// Max sum in sub-arrays
+	// https://practice.geeksforgeeks.org/problems/max-sum-in-sub-arrays0824/1
+	public static long pairWithMaxSum(long arr[], long N) {
+		long res = -(int)1e9;
+		for (int i = 1; i < arr.length; i++) {
+			res = Math.max(res, arr[i - 1] + arr[i]);
+		}
+		return res;
+	}
+
+
+	//Gas Station
+
+	// 1007. Minimum Domino Rotations For Equal Row
+
+	public int minDominoRotations(int[] tops, int[] bottoms) {
+		int val1 = tops[0];
+		int val2 = bottoms[0];
+
+		int count1 = 0; // rotation required to make top as val1
+		int count2 = 0; // rotation required to make top as val2
+		int count3 = 0; // rotation required to make bottom as val1
+		int count4 = 0; // rotation required to make bottom as val2
+
+		for (int i = 0; i < tops.length; i++) {
+			if (count1 != Integer.MAX_VALUE) {
+				if (tops[i] == val1) {
+					// nothing to do
+				} else if (bottoms[i] == val1) {
+					count1++;
+				} else {
+					count1 = Integer.MAX_VALUE;
+				}
 			}
-			end1 = intervals.get(i).end;
+
+			if (count2 != Integer.MAX_VALUE) {
+				if (tops[i] == val2) {
+					// nothing to do
+				} else if (bottoms[i] == val2) {
+					count2++;
+				} else {
+					count2 = Integer.MAX_VALUE;
+				}
+			}
+
+			if (count3 != Integer.MAX_VALUE) {
+				if (bottoms[i] == val1) {
+					// nothing to do
+				} else if (tops[i] == val1) {
+					count3++;
+				} else {
+					count3 = Integer.MAX_VALUE;
+				}
+			}
+
+			if (count4 != Integer.MAX_VALUE) {
+				if (bottoms[i] == val2) {
+					// nothing to do
+				} else if (tops[i] == val2) {
+					count4++;
+				} else {
+					count4 = Integer.MAX_VALUE;
+				}
+			}
+		}
+		int res = Math.min(Math.min(count1, count2), Math.min(count3, count4));
+		return res == Integer.MAX_VALUE ? -1 : res;
+	}
+
+
+	// 632. Smallest Range Covering Elements from K Lists
+
+	public int[] smallestRange(List < List < Integer >> nums) {
+		PriorityQueue < rPair > pq = new PriorityQueue < > ();
+		int max = -(int) 1e9;
+
+		//add first 3 vals
+		for (int i = 0; i < nums.size(); i++) {
+			int val = nums.get(i).get(0);
+			pq.offer(new rPair(val, i, 0));
+			max = Math.max(val, max);
 		}
 
-		return true;
+		int sp = 0;
+		int ep = 0;
+		int length = (int) 1e9;
+
+		while (true) {
+			rPair rem = pq.poll();
+			int minV = rem.val;
+			int maxV = max;
+
+			if (maxV - minV < length) { //update
+				sp = minV;
+				ep = maxV;
+				length = maxV - minV;
+			}
+
+			//add next val from list of removed val
+			if (rem.c + 1 < nums.get(rem.r).size()) {
+				int val = nums.get(rem.r).get(rem.c + 1);
+				pq.offer(new rPair(val, rem.r, rem.c + 1));
+				max = Math.max(max, val);
+			} else {
+				break;
+			}
+		}
+
+		int[] res = {
+			sp,
+			ep
+		};
+		return res;
 	}
 
-	// meeting rooms 2 lintcode 919. https://www.lintcode.com/problem/919/
-	public int minMeetingRooms(List<Interval> intervals) {
+	private class rPair implements Comparable < rPair > {
+		int val;
+		int r;
+		int c;
 
+		public rPair() {}
+
+		public rPair(int val, int r, int c) {
+			this.val = val;
+			this.r = r;
+			this.c = c;
+		}
+
+		public int compareTo(rPair o) {
+			return this.val - o.val;
+		}
 	}
 
+	// 209. Minimum Size Subarray Sum
+	public int minSubArrayLen(int target, int[] nums) {
+		int left = 0, sum = 0, len = (int)1e9;
+
+		for (int i = 0; i < nums.length; i++) {
+			if (nums[i] >= target) {
+				return 1;
+			}
+
+			sum += nums[i];
+			while (sum >= target) {
+				len = Math.min(len, i - left + 1);
+				sum -= nums[left];
+				left++;
+			}
+		}
+		return len == (int)1e9 ? 0 : len;
+	}
+
+	// 643. Maximum Average Subarray I
+	public double findMaxAverage(int[] nums, int k) {
+		double max = -(int)1e9 * 1.0;
+		int sum = 0;
+
+		for (int i = 0; i < nums.length; i++) {
+			if (i < k - 1) {
+				sum += nums[i];
+			} else {
+				sum += nums[i];
+				double avg = sum * 1.0 / k;
+				max = Math.max(max, avg);
+				sum -= nums[i - k + 1];
+			}
+
+		}
+
+		return max;
+	}
 
 
 	public static void main(String[] args) {

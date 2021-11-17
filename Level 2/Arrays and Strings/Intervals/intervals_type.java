@@ -61,7 +61,34 @@ public class intervals_type {
 	//same as minimum number of platforms
 	// meeting rooms 2 lintcode 919. https://www.lintcode.com/problem/919/
 	public int minMeetingRooms(List<Interval> intervals) {
+		int n = intervals.size();
+		int[] arr = new int[n];
+		int[] dep = new int[n];
 
+		for (int i = 0; i < n; i++) {
+			arr[i] = intervals.get(i).start;
+			dep[i] = intervals.get(i).end;
+		}
+
+		Arrays.sort(arr);
+		Arrays.sort(dep);
+
+		int i = 0, j = 0, plat = 0, max = -(int)1e9;
+
+		//ek meeting end hone s pehle ya just ending time pe next start hogyi to
+		//we need extra meeting room
+		while (i < n) {
+			if (arr[i] <= dep[j]) {
+				plat++;
+				i++;
+			} else {
+				plat--;
+				j++;
+			}
+
+			max = Math.max(max, plat);
+		}
+		return max;
 	}
 
 	// leetcode 56. https://leetcode.com/problems/merge-intervals/
@@ -91,14 +118,147 @@ public class intervals_type {
 		}
 	}
 
+	//better
+	public int[][] merge(int[][] intervals) {
+		Arrays.sort(intervals, (a, b) -> {
+			return a[0] - b[0];
+		});
+
+		List < int[] > res = new ArrayList < > ();
+
+		int l1 = intervals[0][0];
+		int r1 = intervals[0][1];
+
+		for (int i = 1; i < intervals.length; i++) {
+			int l2 = intervals[i][0];
+			int r2 = intervals[i][1];
+
+			if (l2 > r1) { //1. non-overlapping , make new
+				int[] sub = {l1, r1};
+				res.add(sub);
+				l1 = l2;
+				r1 = r2;
+			} else if (r2 > r1) { //2. Partial merging
+				r1 = r2; //expand the interval to bigger rightbound
+			} else { //3. full merge
+				// interval already exists inside l1...r1
+			}
+		}
+
+		int[] subinterval = {
+			l1,
+			r1
+		};
+		res.add(subinterval);
+		return res.toArray(new int[res.size()][]);
+	}
+
 	// leetcode 986. https://leetcode.com/problems/interval-list-intersections/
 	public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {
+		List < int[] > res = new ArrayList < > ();
+		int i = 0, j = 0;
 
+		while (i < firstList.length && j < secondList.length) {
+			int left = Math.max(firstList[i][0], secondList[j][0]);
+			int right = Math.min(firstList[i][1], secondList[j][1]);
+
+			if (left <= right) { //shd overlap
+				int[] subres = {left, right};
+				res.add(subres);
+			}
+
+			//how to increment pointers
+			if (firstList[i][1] < secondList[j][1]) { //partial overlap cond.
+				i++;
+			} else { //full overlap
+				j++;
+			}
+		}
+
+		return res.toArray(new int[res.size()][]);
 	}
 
 	// leetcode 57. https://leetcode.com/problems/insert-interval/
 	public int[][] insert(int[][] intervals, int[] newInterval) {
+		if (intervals.length == 0) {
+			return new int[][] {
+				{
+					newInterval[0], newInterval[1]
+				}
+			};
+		}
 
+		List < int[] > res = new ArrayList < > ();
+
+		int i = 0;
+		while (i < intervals.length && intervals[i][1] < newInterval[0]) {
+			res.add(intervals[i]);
+			i++;
+		}
+
+		//merge into one
+		int l = newInterval[0], r = newInterval[1];
+		while (i < intervals.length && intervals[i][0] <= newInterval[1]) {
+			l = Math.min(l, Math.min(intervals[i][0], newInterval[0]));
+			r = Math.max(r, Math.max(intervals[i][1], newInterval[1]));
+			i++;
+		}
+
+		res.add(new int[] {
+		            l,
+		            r
+		        });
+
+		//add rest of intervals
+		while (i < intervals.length) {
+			res.add(intervals[i]);
+			i++;
+		}
+
+		return res.toArray(new int[res.size()][]);
+
+	}
+
+	// Leetcode 853. Car Fleet
+	public int carFleet(int target, int[] position, int[] speed) {
+		int n = speed.length;
+		carPair[] data = new carPair[n];
+
+		for (int i = 0; i < n; i++) {
+			data[i] = new carPair(position[i], speed[i], (target - position[i]) * 1.0 / speed[i]);
+		}
+
+		Arrays.sort(data, (a, b) -> {
+			return a.pos - b.pos;
+		});
+
+		double maxTime = data[n - 1].time;
+
+		// if car behind us takes less time than me , it catches up fleet is same
+		// else never catches up fleet++
+		int fleet = 1;
+		for (int i = n - 1; i >= 0; i--) {
+			if (data[i].time > maxTime) {
+				fleet++;
+				maxTime = data[i].time;
+			}
+		}
+
+		return fleet;
+	}
+
+	private class carPair {
+		int pos;
+		int speed;
+		double time;
+
+		public carPair() {}
+
+		public carPair(int pos, int speed, double time) {
+			this.pos = pos;
+			this.speed = speed;
+			this.time = time;
+		}
 	}
 
 }
