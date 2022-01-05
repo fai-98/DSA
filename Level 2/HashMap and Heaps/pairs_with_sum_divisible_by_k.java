@@ -2,7 +2,7 @@ class Solution {
 	public boolean canArrange(int[] arr, int k) {
 		//make map of remainder
 		// if rem == 0 (freq shd be even)
-		// if rem = k/2 freq even
+		// if rem = k/2 freq even (k even)
 		// rem k freq shd be eq to rem k-x
 
 		Map<Integer, Integer> map = new HashMap<>();

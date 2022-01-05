@@ -39,7 +39,7 @@ public class implement_trie {
 			Node ptr = root;
 			for (int i = 0; i < word.length(); i++) {
 				char ch = word.charAt(i);
-				if (ptr.children[ch - 'a'] == null) {
+				if (ptr.children[ch - 'a'] == null) { //char at node = curr charAt(i)
 					return false;
 				}
 				ptr = ptr.children[ch - 'a'];

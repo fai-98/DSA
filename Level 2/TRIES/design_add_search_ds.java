@@ -1,5 +1,5 @@
 public class design_add_search_ds {
-	// Leetcode 208
+	// Leetcode 211
 	public static class Trie {
 
 		public class Node {
@@ -14,7 +14,6 @@ public class design_add_search_ds {
 
 		private Node root = null;
 
-
 		public WordDictionary() {
 			root = new Node();
 		}
@@ -36,7 +35,7 @@ public class design_add_search_ds {
 			return find(root, word, 0);
 		}
 
-		public boolean find(Node root, String word , int idx) {
+		public boolean find(Node root, String word, int idx) {
 			//base case
 			if (idx == word.length()) {
 				return root.isEnd;
@@ -45,11 +44,13 @@ public class design_add_search_ds {
 			char ch = word.charAt(idx);
 
 			if (ch == '.') {
-				for (int i = 0; i < 26; i++) {
+				for (int i = 0; i < 26; i++) {  //atleast 1 child needed to match .
 					Node child = root.children[i];
 					if (child != null && find(child, word, idx + 1)) {
 						return true;
 					}
+
+					//if matched , match rest of str with subtree
 				}
 				return false;
 			} else {
@@ -57,72 +58,11 @@ public class design_add_search_ds {
 				//match
 				if (child != null) {
 					return find(child, word, idx + 1);
-				} else {
+				} else { //not match
 					return false;
 				}
 
 			}
-		} public class Node {
-			Node[] children;
-			boolean isEnd;
-
-			Node() {
-				this.children = new Node[26];
-				this.isEnd = false;
-			}
-		}
-
-		private Node root = null;
-
-
-		public WordDictionary() {
-			root = new Node();
-		}
-
-		public void addWord(String word) {
-			Node ptr = root;
-			for (int i = 0; i < word.length(); i++) {
-				char ch = word.charAt(i);
-				if (ptr.children[ch - 'a'] == null) {
-					Node nn = new Node();
-					ptr.children[ch - 'a'] = nn;
-				}
-				ptr = ptr.children[ch - 'a'];
-			}
-			ptr.isEnd = true;
-		}
-
-		public boolean search(String word) {
-			return find(root, word, 0);
-		}
-
-		public boolean find(Node root, String word , int idx) {
-			//base case
-			if (idx == word.length()) {
-				return root.isEnd;
-			}
-
-			char ch = word.charAt(idx);
-
-			if (ch == '.') {
-				for (int i = 0; i < 26; i++) {
-					Node child = root.children[i];
-					if (child != null && find(child, word, idx + 1)) {
-						return true;
-					}
-				}
-				return false;
-			} else {
-				Node child = root.children[ch - 'a'];
-				//match
-				if (child != null) {
-					return find(child, word, idx + 1);
-				} else {
-					return false;
-				}
-
-			}
-
 		}
 	}
 }
