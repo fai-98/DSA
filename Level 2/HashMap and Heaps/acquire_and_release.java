@@ -152,9 +152,8 @@ public class acquire_and_release {
 
 	// 3. Longest Substring Without Repeating Characters
 	public static int solution(String str) {
-
-		Map<Character, Integer> map = new HashMap<>();
-		int st = 0, end = 0, len = -(int)1e9, head = 0, extra = 0;
+		Map < Character, Integer > map = new HashMap < > ();
+		int st = 0, end = 0, len = -(int) 1e9, head = 0, extra = 0;
 
 		while (true) {
 			boolean acFlag = false; // acquire flag
@@ -165,10 +164,14 @@ public class acquire_and_release {
 				char ch = str.charAt(end);
 				map.put(ch, map.getOrDefault(ch, 0) + 1);
 				//count manage
+				end++;
 				if (map.get(ch) > 1) {
 					extra++;
+					break;
+				} else {
+					len = Math.max(len, end - st);
 				}
-				end++;
+
 				acFlag = true;
 			}
 
@@ -186,15 +189,142 @@ public class acquire_and_release {
 				reFlag = true;
 			}
 
+			if (acFlag == false && reFlag == false) {
+				break;
+			}
+		}
+		return len;
+	}
+
+	//Alt
+	public int lengthOfLongestSubstring(String s) {
+		int st = 0, end = 0, len = 0, extra = 0, head = 0;
+
+		Map < Character, Integer > map = new HashMap < > ();
+
+		// initially st=end=0 , so all chars are extra
+
+		while (end < s.length()) {
+			char ch = s.charAt(end);
+			if (map.containsKey(ch)) {
+				map.put(ch, map.get(ch) + 1);
+				if (map.get(ch) > 1) {
+					extra++; // req number of that char found
+				}
+			} else {
+				map.put(ch, 1);
+			}
+			// here end has moved 1 step ahead of the valid window end
+			end++;
+
+			while (extra > 0) {
+
+				char ch2 = s.charAt(st);
+				if (map.containsKey(ch2)) {
+					map.put(ch2, map.get(ch2) - 1);
+					if (map.get(ch2) == 1)
+						extra--; // we are leaving char out of the window
+				}
+
+				st++;
+			}
+
+			//find max here
 			len = Math.max(len , end - st);
+
+		}
+
+		return  len;
+	}
+
+	//Using st=-1, and end = -1 is better than 0, it's easy to manage
+
+	// Count Of Substrings Having All Unique Characters
+	public static int solution(String str) {
+		Map < Character, Integer > map = new HashMap < > ();
+		int st = -1, end = -1, count = 0, head = 0;
+
+		while (true) {
+			boolean acFlag = false; // acquire flag
+			boolean reFlag = false; // release flag
+			//acquire
+			while (end < str.length() - 1) {
+				acFlag = true;
+				end++;
+				//acq
+				char ch = str.charAt(end);
+				map.put(ch, map.getOrDefault(ch, 0) + 1);
+
+				if (map.get(ch) > 1) {
+					break;
+				} else {
+					count += end - st;
+				}
+			}
+
+			//Release until valid / make window invalid
+			while (st < end) {
+				reFlag = true;
+				st++;
+				//rel
+				char ch = str.charAt(st);
+				map.put(ch, map.get(ch) - 1);
+
+				if (map.get(ch) == 1) {
+					count += end - st;
+					break;
+				}
+			}
 
 			if (acFlag == false && reFlag == false) {
 				break;
 			}
 		}
-		return len ;
+		return count;
 	}
 
-	//incorrect ans , do again
+	// Longest Substring With Exactly K Unique Characters
+	public static int solution(String str, int k) {
+		Map < Character, Integer > map = new HashMap < > ();
+		int st = -1, end = -1, len = -1, head = 0;
+
+
+		while (true) {
+			boolean acFlag = false;
+			boolean reFlag = false;
+
+			while (end < str.length() - 1) {
+				acFlag = true;
+				end++;
+
+				char ch = str.charAt(end);
+				map.put(ch, map.getOrDefault(ch, 0) + 1);
+
+				if (map.size() > k) {
+					break;
+				} else if (map.size() == k) {
+					len = Math.max(len, end - st);
+				}
+			}
+
+			while (st < end) {
+				reFlag = true;
+				st++;
+
+				char ch = str.charAt(st);
+				map.put(ch, map.get(ch) - 1);
+
+				if (map.get(ch) == 0) {
+					map.remove(ch);
+					break;
+				}
+			}
+
+			if (acFlag == false && reFlag == false)break;
+		}
+
+		return len;
+	}
+
 
 }
