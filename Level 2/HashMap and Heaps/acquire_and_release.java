@@ -327,4 +327,294 @@ public class acquire_and_release {
 	}
 
 
+	// Count Of Substrings With Exactly K Unique Characters (V.V.I)
+
+
+	// Maximum Consecutive Ones - 1 / Leetcode 487.
+	public static int solution(int[] arr) {
+		int st = -1, end = -1, len = -(int)1e9, zero = 0;
+
+		while (end < arr.length - 1) {
+			end++;
+			if (arr[end] == 0) {
+				zero++;
+			}
+
+			while (zero > 1) {
+				st++;
+				if (arr[st] == 0) {
+					zero--;
+				}
+			}
+
+			len = Math.max(len, end - st);
+		}
+
+		return len;
+	}
+
+
+	// Maximum Consecutive Ones - 2 / 1004. Max Consecutive Ones III
+	public static int solution(int[] arr, int k) {
+		int st = -1, end = -1, len = -(int)1e9, zero = 0;
+
+		while (end < arr.length - 1) {
+			end++;
+			if (arr[end] == 0) {
+				zero++;
+			}
+
+			while (zero > k) {
+				st++;
+				if (arr[st] == 0) {
+					zero--;
+				}
+			}
+
+			len = Math.max(len, end - st);
+		}
+
+		return len;
+	}
+
+	// longest subarray with contiguous elements
+	// if elements can be arranged in contiguous order
+	// diff bw max(arr) - min(arr) == last idx - first idx
+	public static int solution(int[] arr) {
+		int len = -(int)1e9;
+
+		for (int i = 0; i < arr.length; i++) {
+			int min = (int)1e9;
+			int max = -(int)1e9;
+			Set<Integer> set = new HashSet<>();
+
+			for (int j = i; j < arr.length; j++) {
+				if (set.contains(arr[j])) {
+					break;
+				}
+				set.add(arr[j]);
+
+				min = Math.min(arr[j], min);
+				max = Math.max(max, arr[j]);
+
+				if (max - min == j - i) {
+					len = Math.max(len, j - i + 1);
+				}
+
+			}
+		}
+
+		return len;
+	}
+
+	// Count Of Substrings With Exactly K Unique Characters
+	// WA , re-do
+	public static int solve_k1(String str) {
+		int st = -1, end = -1, count = 0;
+		Map<Character, Integer> map = new HashMap<>();
+
+		while (true) {
+			boolean f1 = false;
+			boolean f2 = false;
+
+			while (end < str.length() - 1) {
+				f1 = true;
+				end++;
+				char ch = str.charAt(end);
+				map.put(ch, map.getOrDefault(ch, 0) + 1);
+
+				if (map.size() == 2) {
+					end--;
+					removeFromMap(map, ch);
+					break;
+				}
+			}
+
+			while (st < end) {
+				f2 = true;
+				if (map.size() == 1) {
+					count += end - st;
+				}
+
+				end++;
+
+				char ch = str.charAt(st);
+				removeFromMap(map, ch);
+
+				if (map.size() == 0) {
+					break;
+				}
+
+			}
+
+			if (f1 == false && f2 == false)break;
+		}
+
+		return count;
+	}
+	public static int solution(String str, int k) {
+
+		if (k == 1) {
+			return solve_k1(str);
+		}
+
+		int is = -1, ib = -1, j = -1, count = 0;
+		Map<Character, Integer> s_map = new HashMap<>();
+		Map<Character, Integer> b_map = new HashMap<>();
+
+		while (true) {
+			boolean f1 = false;
+			boolean f2 = false;
+			boolean f3 = false;
+
+
+			//acquire big   k map
+			while (ib < str.length() - 1) {
+				f2 = true;
+				ib++;
+				char ch = str.charAt(ib);
+				b_map.put(ch, b_map.getOrDefault(ch, 0) + 1);
+
+				if (b_map.size() == k + 1) {
+					ib--;
+					removeFromMap(b_map, ch);
+					break;
+				}
+			}
+
+			//acquire small (k-1)
+			while (is < ib) {
+				f1 = true;
+				is++;
+				char ch = str.charAt(is);
+				s_map.put(ch, s_map.getOrDefault(ch, 0) + 1);
+
+				if (s_map.size() == k) {
+					is--;
+					removeFromMap(s_map, ch);
+					break;
+				}
+			}
+
+			//release both
+			while (j < is ) {
+				if (s_map.size() == k - 1 && b_map.size() == k) {
+					count += ib - is;
+				}
+
+				j++;
+				char ch = str.charAt(j);
+				removeFromMap(s_map, ch);
+				removeFromMap(b_map, ch);
+
+				//invalid
+				if (s_map.size() < k - 1 || b_map.size() < k ) {
+					break;
+				}
+				//conditional break
+				if (f1 == false && f2 == false && f3 == false)break;
+			}
+
+			return count;
+		}
+	}
+	public static void removeFromMap(Map<Character, Integer> map, Character ch) {
+		if (map.get(ch) == 1) {
+			map.remove(ch);
+		} else {
+			map.put(ch, map.get(ch) - 1);
+		}
+	}
+
+	//09-Jan-22
+
+	// 386. Longest Substring with At Most K Distinct Characters - Lintcode
+	public int lengthOfLongestSubstringKDistinct(String s, int k) {
+		int aq = -1, rel = -1, len = 0;
+		Map<Character, Integer> map = new HashMap<>();
+
+		while (true) {
+			boolean aqFlag = false;
+			boolean reFlag = false;
+
+			while (aq < s.length() - 1) {
+				aqFlag = true;
+				aq++;
+
+				char ch = s.charAt(aq);
+				map.put(ch, map.getOrDefault(ch, 0) + 1);
+
+				if (map.size() == k + 1) {
+					break;
+				} else {
+					len = Math.max(len, aq - rel);
+				}
+			}
+
+			while (rel < aq) {
+				reFlag = true;
+				rel++;
+
+				char ch = s.charAt(rel);
+				map.put(ch, map.getOrDefault(ch, 0) - 1);
+				if (map.get(ch) == 0) {
+					map.remove(ch);
+					break;
+				}
+			}
+
+			if (aqFlag == false && reFlag == false)break;
+
+		}
+		return len;
+	}
+
+	// Count Of Substrings Having At Most K Unique Characters
+	public static int solution(String s, int k) {
+		int aq = -1, rel = -1, count = 0;
+		Map<Character, Integer> map = new HashMap<>();
+
+		while (true) {
+			boolean aqFlag = false;
+			boolean reFlag = false;
+
+			while (aq < s.length() - 1) {
+				aqFlag = true;
+				aq++;
+
+				char ch = s.charAt(aq);
+				map.put(ch, map.getOrDefault(ch, 0) + 1);
+
+				if (map.size() == k + 1) {
+					break;
+				} else {
+					count += aq - rel;
+				}
+			}
+
+			if (aq == s.length() - 1 && map.size() <= k) {
+				break;
+			}
+
+			while (rel < aq) {
+				reFlag = true;
+				rel++;
+
+				char ch = s.charAt(rel);
+				map.put(ch, map.getOrDefault(ch, 0) - 1);
+				if (map.get(ch) == 0)map.remove(ch);
+
+				if (map.size() == k) {
+					count += aq - rel;
+					break;
+				}
+			}
+
+			if (aqFlag == false && reFlag == false)break;
+
+		}
+
+		return count;
+	}
+
 }
