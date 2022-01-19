@@ -157,10 +157,10 @@ public class binary_search {
 		return -1;
 	}
 
-	// 153. Find Minimum in Rotated Sorted Array\
+	// 153. Find Minimum in Rotated Sorted Array
 
 
-
+	//Find Rotation Count
 
 	// =================================important ques============================================
 
@@ -281,5 +281,101 @@ public class binary_search {
 
 
 	// 1011. Capacity To Ship Packages Within D Days
+
+
+	// Count Zeros In A Sorted Matrix
+	public static int countZeros(int[][]mat) {
+		int n = mat.length, m = mat[0].length;
+		int i = n - 1, j = 0, ct = 0;
+
+		while (i >= 0 && j < m) {
+			if (mat[i][j] == 1) {
+				i--;
+			} else {
+				ct += i + 1;
+				j++;
+			}
+		}
+
+		return ct;
+	}
+
+
+	// Counting Elements In Two Arrays
+	public static int[] find(int[]arr1, int[]arr2) {
+		int n = arr1.length;
+		Arrays.sort(arr2);
+		int[] res = new int[n];
+
+		for (int i = 0; i < n; i++) {
+			int ceil = getCeil(arr2, arr1[i], arr2.length);
+			res[i] = ceil;
+		}
+
+		return res;
+	}
+
+	public static int getCeil(int[] arr, int val, int n) {
+		int lo = 0, hi = n - 1, ceil = -1;
+
+		while (lo <= hi) {
+
+			int mid = lo + (hi - lo) / 2;
+
+			if (arr[mid] <= val) {
+				lo = mid + 1;
+			} else {
+				ceil = mid;
+				hi = mid - 1;
+			}
+		}
+
+		return ceil == -1 ? n : ceil;
+	}
+
+
+
+	// Distinct Absolute Array Elements
+	public static int count(int[]arr) {
+		int n = arr.length;
+		int i = 0, j = n - 1, ct = 0, prev = -(int)1e9, next = (int)1e9;
+
+		while (i <= j) {
+			int l = Math.abs(arr[i]);
+			int r = Math.abs(arr[j]);
+
+			if (l == r) {
+				if (l != prev && r != next) {
+					ct++;
+				}
+				prev = l;
+				next = r;
+				i++;
+				j--;
+			} else if (l < r) {
+				if (r != next) {
+					ct++;
+				}
+				next = r;
+				j--;
+			} else {
+				if (l != prev) {
+					ct++;
+				}
+				prev = l;
+				i++;
+			}
+		}
+		return ct;
+	}
+
+
+	// 540. Single Element in a Sorted Array
+	public int singleNonDuplicate(int[] nums) {
+
+	}
+
+
+
 
 }

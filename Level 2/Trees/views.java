@@ -1,301 +1,7 @@
-import java.util.ArrayList;
-
-public class AdvanceTrees {
-
-	public static class TreeNode {
-		int val = 0;
-		TreeNode left = null;
-		TreeNode right = null;
-
-		TreeNode(int val) {
-			this.val = val;
-		}
-	}
-
-	public static int size(TreeNode root) {
-		return root == null ? 0 : size(root.left) + size(root.right) + 1;
-	}
-
-	public static int height(TreeNode root) {
-		return root == null ? -1 : Math.max(height(root.left), height(root.right)) + 1;
-	}
-
-	public static int Maximum(TreeNode root) {
-		return root == null ? -(int) 1e9 : Math.max(Math.max(Maximum(root.left), Maximum(root.right)), root.val);
-	}
-
-	public static boolean find(TreeNode root, int data) {
-		if (root == null)
-			return false;
-		if (root.val == data)
-			return true;
-
-		return find(root.left, data) || find(root.right, data);
-	}
-
-
-	public static ?? ?? NodeToRootPath(TreeNode root, int data, ArrayList<TreeNode> ans) {
-
-	}
-
-
-	public static ArrayList<ArrayList<TreeNode>> nodeToAllLeafPath(TreeNode root) {
-		if (root == null)return null;
-		ArrayList<ArrayList<TreeNode>> res = new ArrayList<>();
-		helper(root, res, new ArrayList<TreeNode>());
-		return res;
-	}
-
-	public static void helper(TreeNode node , ArrayList<ArrayList<TreeNode>> res , ArrayList<TreeNode> temp ) {
-		if (node == null)return;
-		if (node.left == null && node.right == null) {
-			temp.add(node);
-			res.add(new ArrayList(temp));
-			temp.remove(temp.size() - 1);
-		}
-
-		temp.add(node)
-		helper(node.left, res, temp);
-		helper(node.right, res, temp);
-		temp.remove(temp.size() - 1);
-	}
-
-	public static int countExactlyOneChild(TreeNode node) {
-		if (node == null)return 0;
-		if (node.left == null && node.right == null)return 0;
-
-		int lans = countExactlyOneChild(node.left);
-		int rans = countExactlyOneChild(node.right);
-
-		return (node.left == null || node.right == null) ? 1 + lans + rans : lans + rans;
-	}
-
-	// print nodes k distance away
-	//take 0(N) space worst case , skewed tree
-	public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
-		List<TreeNode> paths = NodeToRootPath(root, target.val);
-		List<Integer> res = new ArrayList<>();
-		TreeNode blocker = null;
-
-		for (int i = 0; i < paths.size(); i++) {
-			if (k - i < 0)break;
-			kDown(paths.get(i), blocker, k - i, res);
-			blocker = paths.get(i);
-		}
-
-		for (TreeNode node : paths) {
-			System.out.println(node.val);
-		}
-
-		return res;
-	}
-
-	public static List<TreeNode> NodeToRootPath(TreeNode root, int data) {
-		if (root == null) {
-			return new ArrayList<>();
-		}
-
-		if (root.val == data) {
-			List<TreeNode> base = new ArrayList<>();
-			base.add(root);
-			return base;
-		}
-
-		List<TreeNode> left = NodeToRootPath(root.left, data);
-		if (left.size() != 0) {
-			left.add(root);
-			return left;
-		}
-
-		List<TreeNode> right = NodeToRootPath(root.right, data);
-		if (right.size() != 0) {
-			right.add(root);
-			return right;
-		}
-
-		return new ArrayList<>();
-	}
-
-
-	public static void kDown(TreeNode node , TreeNode blocker , int k , List<Integer> res) {
-		if (node == null || node == blocker || k < 0)return;
-		if (k == 0) {
-			res.add(node.val);
-			return;
-		}
-		kDown(node.left, blocker, k - 1, res);
-		kDown(node.right, blocker, k - 1, res);
-
-		return;
-	}
+public class views {
 
 	/*
-	k distance space optimized
-	nodeToRootPath+kDown simultaneously
-	Time : O(2N);
-	Space : O(1)+O(Recursive);
-	*/
-	public static List<Integer> distanceK_01(TreeNode root, TreeNode target, int k) {
-		List < Integer > res = new ArrayList < > ();
-		NodeToRootPath_01(root, target, k, res);
-		return res;
-	}
-
-	public static int NodeToRootPath_01(TreeNode root, TreeNode target , int k , List<Integer> res) {
-		//if(null) identify with -1
-		if (root == null)return -1;
-
-		if (root == target) {
-			kDown(root, null, k, res);
-			return 1;
-		}
-
-		int left_distance = NodeToRootPath_01(root.left, target, k);
-		if (left_distance != -1) {
-			kDown(root, root.left, k - left_distance, res);
-			return left_distance + 1;
-		}
-
-		int right_distance = NodeToRootPath_01(root.right, target, k);
-		if (right_distance != -1) {
-			kDown(root, root.right, k - right_distance, res);
-			return right_distance + 1;
-		}
-		return -1;
-	}
-
-
-	/*
-	Burn the binary tree
-	Time : O(2N);
-	Space : O(1)+O(Recursive);
-	https://www.geeksforgeeks.org/burn-the-binary-tree-starting-from-the-target-node/
-	*/
-	public static List<List<Integer>> burningTreeDriver(TreeNode root, int target ) {
-		List<List<Integer>> ans = new ArrayList<>();
-		burningTree(root, target.val, ans);
-		return ans;
-	}
-
-	/*
-	this uses node to root path and also calls kDown simultaneously , space optimized;
-	-1 means node not found so no call for kDown , if ans not -1 , call kdown with k = 0;
-	int this fire starts from the origin and spreads , so k increases;
-	*/
-	public  int burningTree(TreeNode root, int target , List<List<Integer>> ans) {
-		if (root == null) {
-			return -1;
-		}
-
-		if (root.val == target) {
-			kDown2(root, null, 0, ans);
-			return 1;
-		}
-
-		int ld = burningTree(root.left, target, ans);
-		if (ld != -1) {
-			kDown2(root, root.left, ld, ans);
-			return ld + 1;
-		}
-
-		int rd = burningTree(root.right, target, ans);
-		if (rd != -1) {
-			kDown2(root, root.right, rd, ans);
-			return rd + 1;
-		}
-
-		return -1;
-	}
-
-	/*modified k down , at every node time is present , for origin node time is 0
-	  if(time==list.size() -> this node is first one so add emty [] and then add node.val);
-	  int list of list every idx represents time , idx==time;
-
-	  ..kdown calls dfs on whole subtree with t++ on child nodes and adds nodes to list at t=idx;
-	*/
-	public  void kDown2(TreeNode node , TreeNode blocker , int time , List<List<Integer>> res) {
-		if (node == null || node == blocker)return;
-
-		if (time == res.size()) {
-			res.add(new ArrayList<>());
-		}
-		res.get(time).add(node.val);
-
-		kDown2(node.left, blocker, time + 1, res);
-		kDown2(node.right, blocker, time + 1, res);
-
-		return;
-	}
-
-
-
-	//burning tree with water
-
-	// #236 -> LCA Lowest Common Ancestor simple sol
-	// T - O(3N) S - O(2N)
-	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-		List<TreeNode> list1 = nodeToRootPath(root, p);
-		List<TreeNode> list2 = nodeToRootPath(root, q);
-
-		int p1 = list1.size() - 1;
-		int p2 = list2.size() - 1;
-
-		while (p1 >= 0 && p2 >= 0) {
-			if (list1.get(p1) == list2.get(p2)) {
-				p1--;
-				p2--;
-			} else {
-				break;
-			}
-		}
-
-		return list1.get(p1 + 1);
-
-	}
-
-	// Optimized T: O(N) , S: O(1)
-	static TreeNode LCA;
-	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-		LCA = null;
-		isPresent(root, p, q);
-		return LCA;
-	}
-
-	public boolean isPresent(TreeNode node , TreeNode p, TreeNode q) {
-		if (node == null)return false;
-
-		boolean lans = isPresent(node.left, p, q);
-		boolean rans = isPresent(node.right, p, q);
-		boolean self = (node == p || node == q);
-		if (self && lans || self && rans || lans && rans) {
-			LCA = node;
-			return true;
-		}
-		return (node == p || node == q) || lans || rans;
-
-	}
-
-
-	//LCA try without boolean
-	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-		if (root == null)return null;
-
-		TreeNode L = lowestCommonAncestor(root.left, p, q);
-		TreeNode R = lowestCommonAncestor(root.right, p, q);
-		TreeNode self = (root == p || root == q) ? root : null;
-		if ((L != null && R != null) || (self != null && L != null) || (self != null && R != null)) {
-			return root;  //return root , not self coz  in L&&R case self is null
-		}
-
-		return L != null ? L : R != null ? R : self != null ? self : null;
-	}
-
-	/*
-	Burning Tree With water , given arrayList of TreeNodes/Vals(Unique) containing water
-	*/
-
-	/*
-	ALL VIEW TYPES oF QUESTIONS --------------------------------------------------------------------------
+	ALL VIEW TYPES OF QUESTIONS --------------------------------------------------------------------------
 	*/
 
 	// imp ques for solving all these level order
@@ -379,12 +85,12 @@ public class AdvanceTrees {
 	Prerequisites - Pair Class{vertical level , TreeNode } , Width of Shadow - for no. of vertical levels
 	*/
 
-	public static void widthOfShadow(TreeNode node , int vl , int[] minMax) {
+	public static void widthOfShadow(TreeNode node , int hl , int[] minMax) {
 		if (node == null)return;
-		minMax[0] = Math.min(minMax[0], vl);
-		minMax[1] = Math.max(minMax[1], vl);
-		widthOfShadow(node.left, vl - 1, minMax);
-		widthOfShadow(node.right, vl + 1, minMax);
+		minMax[0] = Math.min(minMax[0], hl);
+		minMax[1] = Math.max(minMax[1], hl);
+		widthOfShadow(node.left, hl - 1, minMax);
+		widthOfShadow(node.right, hl + 1, minMax);
 
 	}
 
@@ -441,10 +147,117 @@ public class AdvanceTrees {
 
 	}
 
+	//Vertical Order Recursive ********************************************************************
+
+	public static void helper(Node root, int idx, int hl, ArrayList<Integer> res) {
+		if (root == null) return;
+		if (idx == hl) {
+			System.out.print(root.data + " ");
+		}
+
+		helper(root.left, idx, hl - 1, res);
+		helper(root.right, idx, hl + 1, res);
+	}
+
+	//Function to find the vertical order traversal of Binary Tree.
+	public static void verticalOrder(Node root) {
+		int[] minMax = new int[2];
+		widthOfShadow(root, 0, minMax);
+
+		int width = minMax[1] - minMax[0] + 1;
+		int rootPos = Math.abs(minMax[0]);
+
+		for (int i = 0; i < width; i++) {
+			helper(root, i, rootPos, list);
+			System.out.println();
+		}
+	}
+
+
+	//Vertical Order Sum Using DFS ********************************************************************
+
+	public ArrayList <Integer> verticalSum(Node root) {
+		int[] minMax = new int[2];
+		widthOfShadow(root, 0, minMax);
+
+		int hLevels = minMax[1] - minMax[0] + 1;
+
+		ArrayList<Integer> res = new ArrayList<>();
+		for (int i = 0; i < hLevels; i++) {
+			res.add(null);
+		}
+
+		int rIdx = Math.abs(minMax[0]);
+		dfs(root, res, rIdx);
+		return res;
+	}
+
+	//Note : nodes at the same vertical line are at the same horiz.. dist from the root
+	public void dfs(Node root, ArrayList<Integer> res, int hd) {
+		if (root == null)return;  //base case
+
+		//add vals at same vertical line
+		if (res.get(hd) == null) {
+			res.set(hd, root.data);
+		} else {
+			int sum = res.get(hd);
+			res.set(hd, sum + root.data);
+		}
+
+		dfs(root.left, res, hd - 1);
+		dfs(root.right, res, hd + 1);
+	}
+
+	//Vertical Order Sum Using View ********************************************************************
+
+	public ArrayList <Integer> verticalSum(Node root) {
+
+		ArrayList<Integer> res = new ArrayList<>();
+
+		int[] minMax = new int[2];
+		widthOfShadow(root, 0, minMax);
+
+		int vLevels = minMax[1] - minMax[0] + 1;
+
+		for (int i = 0; i < vLevels; i++) {
+			res.add(null);
+		}
+
+		Queue < vPair > q = new ArrayDeque < > ();
+		//idx of root = Math.abs(leftmost)
+		q.add(new vPair(root, Math.abs(minMax[0])));
+
+		while (q.size() > 0) {
+
+			int size = q.size();
+
+			for (int i = 0; i < size; i++) {
+				vPair rem = q.poll();
+				Node node = rem.node;
+				int level = rem.vl;
+
+				if (res.get(level) == null) {
+					res.set(level, node.data);
+				} else {
+					res.set(level, res.get(level) + node.data);
+				}
+
+				if (node.left != null) q.add(new vPair(node.left, level - 1));
+				if (node.right != null) q.add(new vPair(node.right, level + 1));
+
+			}
+		}
+
+		return res;
+	}
+
+
+
 	/*Bottom View
-	  in vertical order the last val of each vertical level is the bottom node ,
-	  i.e the last val at each list idx, update/override when a new node comes at same idx
-	*/
+		  in vertical order the last val of each vertical level is the bottom node ,
+		  i.e the last val at each list idx, update/override when a new node comes at same idx
+		*/
+
 	public static List<Integer> bottomView(TreeNode root) {
 		int[] minMax = new int[2];
 		widthOfShadow(root, 0, minMax);
@@ -469,7 +282,7 @@ public class AdvanceTrees {
 				TreeNode node = rem.node;
 				int level = rem.vl;
 
-				res.set(node.val); //One line diff from Vertical Order
+				res.set(level, node.val); //One line diff from Vertical Order / Overwrite
 
 				if (node.left != null) q.add(new vPair(node.left, level - 1));
 				if (node.right != null) q.add(new vPair(node.right, level + 1));
@@ -481,7 +294,8 @@ public class AdvanceTrees {
 
 	}
 
-	//Top View - first node of Vertical Order
+	//Top View - first node of Vertical Order****************************************************************
+
 	public static List<Integer> topView(TreeNode root) {
 		int[] minMax = new int[2];
 		widthOfShadow(root, 0, minMax);
@@ -506,6 +320,7 @@ public class AdvanceTrees {
 				TreeNode node = rem.node;
 				int level = rem.vl;
 
+				//only set first time
 				if (res.get(level) == null)res.set(level, node.val); //One line diff from Vertical Order
 
 				if (node.left != null) q.add(new vPair(node.left, level - 1));
@@ -517,6 +332,13 @@ public class AdvanceTrees {
 		return res;
 
 	}
+
+	//Top View Using Map -- do again !!!*****************************************************************
+	public static void topViewHashing(TreeNode root) {
+
+	}
+
+
 
 	/*Diagonal Order traversal  4
 								 \
@@ -551,11 +373,10 @@ public class AdvanceTrees {
 		return res;
 	}
 
-	//Anti Diagonal Order
+	//Anti Diagonal Order********************************************************************
 
-	//Vertical Order Sum Using View
 
-	//Diagonal Order Sum Using View (check again******)
+	//Diagonal Order Sum Using View (check again******)**************************************
 
 	public static List<List<Integer>> diagonalOrder(TreeNode root) {
 		List<List<Integer>> res = new ArrayList<>();
@@ -588,7 +409,7 @@ public class AdvanceTrees {
 		return res;
 	}
 
-	//Vertical Order Sum Using Shadow Technique
+	//Vertical Order Sum Using Shadow Technique*************************************************************
 
 	public class ListNode {
 		ListNode prev = null;
@@ -655,6 +476,10 @@ public class AdvanceTrees {
 	*/
 
 	/*
+
+
+
+
 	#987. Vertical Order Traversal of a Binary Tree
 	a. Use two priority q , parent and child
 	b. if vLevel equal smaller val pops , otherwise smaller vLevel comes out
@@ -746,9 +571,4 @@ public class AdvanceTrees {
 
 		return res;
 	}
-
-
-
 }
-
-

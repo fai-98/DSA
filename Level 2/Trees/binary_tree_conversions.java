@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.*;
 
-public class BinaryTreeConversions {
+public class binary_tree_conversions {
 	// public static class Node {
 	// int val = 0;
 	// Node left = null;
@@ -50,7 +50,7 @@ public class BinaryTreeConversions {
 	 * iterative inorder traversal , can also do recursive using static node left ,
 	 * same logic if static not allowed , make Node[] arr of 1 size , the changes
 	 * will persist also can make a Pair Class
-	 * 
+	 *
 	 * Same Code for CDLL head.left = tail; tail.right = head; in DLL left = prev,
 	 * right = next;
 	 */

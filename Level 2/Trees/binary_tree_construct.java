@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class BinaryTreeConstruct {
+public class binary_tree_construct {
 
 
   public static class Node {

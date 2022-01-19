@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.*;
 
-public class InorderPredSuc {
+public class inorder_pre_suc {
 	public static class TreeNode {
 		int val = 0;
 		TreeNode left = null;

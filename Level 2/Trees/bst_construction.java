@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class BSTConstruct {
+public class bst_construction {
 	public static class Node {
 		int data;
 		Node left;

@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class kFarNodes {
+public class k_far_nodes {
     public static class Node {
         int data;
         Node left;

@@ -166,61 +166,140 @@ public class anagram {
 				map.put(key, list);
 			}
 		}
-
-
-		// 205. Isomorphic Strings
-		public boolean isIsomorphic(String s, String t) {
-			if (s.length() != t.length()) return false;
-
-			Map < Character, Character > map = new HashMap < > ();
-			Set<Character> set = new HashSet<>();
-
-			for (int i = 0; i < s.length(); i++) {
-				char ch1 = s.charAt(i);
-				char ch2 = t.charAt(i);
-
-				if (map.containsKey(ch1)) {
-					if (map.get(ch1) != ch2)
-						return false;
-				} else {
-					if (set.contains(ch2)) { //ch2 mapped with another char
-						return false;
-					} else {
-						map.put(ch1, ch2);
-						set.add(ch2); //ch2 is mapped
-					}
-				}
-			}
-
-			return true;
-		}
-
-		// 290. Word Pattern
-		public boolean wordPattern(String pattern, String s) {
-			Map < Character, String > map = new HashMap < > ();
-			Set<String> set = new HashSet<>();
-
-			String[] strs = s.split("\\s");
-
-			if (pattern.length() != strs.length)return false;
-
-			for (int i = 0; i < pattern.length(); i++) {
-				char ch1 = pattern.charAt(i);
-				String str = strs[i];
-
-				if (map.containsKey(ch1)) {
-					if (!map.get(ch1).equals(str))
-						return false;
-				} else {
-					if (set.contains(str)) { //ch2 mapped with another char
-						return false;
-					} else {
-						map.put(ch1, str);
-						set.add(str); //ch2 is mapped
-					}
-				}
-			}
-
-			return true;
-		}
 	}
+
+
+	// 205. Isomorphic Strings
+	public boolean isIsomorphic(String s, String t) {
+		if (s.length() != t.length()) return false;
+
+		Map < Character, Character > map = new HashMap < > ();
+		Set<Character> set = new HashSet<>();
+
+		for (int i = 0; i < s.length(); i++) {
+			char ch1 = s.charAt(i);
+			char ch2 = t.charAt(i);
+
+			if (map.containsKey(ch1)) {
+				if (map.get(ch1) != ch2)
+					return false;
+			} else {
+				if (set.contains(ch2)) { //ch2 mapped with another char
+					return false;
+				} else {
+					map.put(ch1, ch2);
+					set.add(ch2); //ch2 is mapped
+				}
+			}
+		}
+
+		return true;
+	}
+
+	// 290. Word Pattern
+	public boolean wordPattern(String pattern, String s) {
+		Map < Character, String > map = new HashMap < > ();
+		Set<String> set = new HashSet<>();
+
+		String[] strs = s.split("\\s");
+
+		if (pattern.length() != strs.length)return false;
+
+		for (int i = 0; i < pattern.length(); i++) {
+			char ch1 = pattern.charAt(i);
+			String str = strs[i];
+
+			if (map.containsKey(ch1)) {
+				if (!map.get(ch1).equals(str))
+					return false;
+			} else {
+				if (set.contains(str)) { //ch2 mapped with another char
+					return false;
+				} else {
+					map.put(ch1, str);
+					set.add(str); //ch2 is mapped
+				}
+			}
+		}
+
+		return true;
+	}
+
+
+	// Check Arithmetic Sequence Easy
+	// Rabbits In The Forest Medium
+	// Recurring Sequence In A Fraction Hard
+	// Equivalent Subarrays Medium
+	// Pairs With Equal Sum
+
+	//16.Jan.2022
+	// Pairs With Given Sum In Two Sorted Matrices
+
+	// Smallest Subarray With All Occurrences Of The Most Frequent Element
+	public static void solution(int[] arr) {
+		Map<Integer, Integer> fmap = new HashMap<>(); //freq
+		Map<Integer, Integer> imap = new HashMap<>(); // st idx
+
+		int si = 0, ei = 0, len = 0, maxFreq = 0;
+		for (int i = 0; i < arr.length; i++) {
+			int val = arr[i];
+
+			//freq
+			if (fmap.containsKey(val)) {
+				fmap.put(val, fmap.get(val) + 1);
+			} else {
+				fmap.put(val, 1);
+				imap.put(val, i);
+			}
+
+			// updation
+			if (maxFreq < fmap.get(val)) {
+				//update max , si , ei
+				maxFreq = fmap.get(val);
+				si = imap.get(val);
+				ei = i;
+				len = ei - si + 1;
+			} else if (maxFreq == fmap.get(val)) {
+				//update si,ei, if len is shorter
+				int nLen = i - imap.get(val) + 1;
+				if (nLen < len) {
+					len = nLen;
+					ei = i;
+					si = imap.get(val);
+				}
+
+			} else {
+				//nothing to do
+			}
+		}
+
+		System.out.println(arr[si]);
+		System.out.println(si);
+		System.out.println(ei);
+	}
+
+	// 914. X of a Kind in a Deck of Cards
+	public boolean hasGroupsSizeX(int[] deck) {
+		int freq = 0;
+		Map<Integer, Integer> map = new HashMap<>();
+
+		for (int i = 0; i < deck.length; i++) {
+			map.put(deck[i], map.getOrDefault(deck[i], 0) + 1);
+		}
+
+		int ans = 0;
+		for (int key : map.keySet()) {
+			int val = map.get(key);
+			ans = gcd(ans, val);
+		}
+
+		return ans >= 2;
+	}
+
+	public int gcd(int a, int b) {
+		if (b == 0)return a;
+		else return gcd(b, a % b);
+	}
+
+	// 554. Brick Wall
+}

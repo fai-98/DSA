@@ -178,32 +178,32 @@ public class reverse_linkedlist {
 		return dummy.next;
 	}
 
-	//ALt
-	public static ListNode removeDuplicates(ListNode head) {
+	//ALt (using itr)
+	//if loop run -> remove all nodes itr.next.........before curr
+	public ListNode deleteDuplicates(ListNode head) {
 		if (head == null || head.next == null)
 			return head;
+
 		ListNode dummy = new ListNode(-1);
-		ListNode curr = head.next, prev = dummy;
-		prev.next = head;
+		ListNode itr = dummy, curr = head.next;
+		itr.next = head; //potential unique element
 
 		while (curr != null) {
 			boolean isLoopRun = false;
-			while (curr != null && curr.val == prev.next.val) {
-				ListNode forw = curr.next;
-				curr.next = null;
-				curr = forw;
+			while (curr != null && itr.next.val == curr.val) {
 				isLoopRun = true;
-			}
-
-			if (isLoopRun) {
-				prev.next = curr;
-			} else {
-				prev = prev.next;
-				prev.next = curr;
-			}
-
-			if (curr != null)
 				curr = curr.next;
+			}
+
+			if (isLoopRun == true) { //dups exist
+				itr.next = curr;     //new pot dup
+			} else {
+				itr = itr.next;      //confirm unique
+			}
+
+			if (curr != null) {
+				curr = curr.next;
+			}
 		}
 
 		return dummy.next;

@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.*;
 
-public class AdvanceBST {
+public class advance_bst {
 	public static class TreeNode {
 		int val = 0;
 		TreeNode left = null;

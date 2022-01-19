@@ -1,4 +1,4 @@
-public class AVL {
+public class avl_tree {
 
     public static class TreeNode {
         int val = 0;

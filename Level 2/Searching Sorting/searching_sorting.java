@@ -98,7 +98,7 @@ public class searching_sorting {
 	// Search A 2d Matrix - 2
 
 
-	// Find Pivot Index / Equilibrium Index
+	// 724. Find Pivot Index / Equilibrium Index
 	public int pivotIndex(int[] nums) {
 		int osum = 0, lsum = 0;
 		for (int i = 0; i < nums.length; i++) {
@@ -178,5 +178,151 @@ public class searching_sorting {
 		return res;
 	}
 
-	// Search In Rotated Sorted Array
+	// Count Zeros Xor Pairs
+	public static int countPairs(int[]arr) {
+		Map<Integer, Integer> map = new HashMap<>();
+
+		for (int i = 0; i < arr.length; i++) {
+			map.put(arr[i], map.getOrDefault(arr[i], 0) + 1);
+		}
+
+		int res = 0;
+		for (int key : map.keySet()) {
+			int fq = map.get(key);
+			res += (fq * (fq - 1)) / 2;
+		}
+
+		return res;
+	}
+
+	// Facing The Sun
+	public static int countBuildings(int[]ht) {
+		int max = ht[0], ct = 1;
+		for (int i = 1; i < ht.length; i++) {
+			if (ht[i] > max) {
+				max = ht[i];
+				ct++;
+			}
+		}
+		return ct;
+	}
+
+	// Largest Perimeter Triangle
+	//a<b<c , so only check is a+b>c
+	//if false move all 3 ptrs
+	public static int largestPerimeter(int[] nums) {
+		Arrays.sort(nums);
+		int n = nums.length, a = 0, b = 0, c = 0, perimeter = 0;
+		int i = n - 3, j = n - 2, k = n - 1;
+
+		while (i >= 0) {
+			a = nums[i];
+			b = nums[j];
+			c = nums[k];
+
+			if (a + b > c) {
+				perimeter = a + b + c;
+				break;
+			}
+
+			i--; j--; k--;
+		}
+		return perimeter;
+	}
+
+	//Largest Number
+	public static String largestNumber(int[]nums) {
+
+		return "";
+	}
+
+
+	//Ishaan and sticks
+	//Using Sorting ??
+	public static ArrayList<Integer>  solve(int[] arr) {
+		Arrays.sort(arr);
+		int n = arr.length;
+		int i = n - 4, j = n - 3, k = n - 2, l = n - 1, ct = 0, area = 0;
+		int a = 0, b = 0, c = 0, d = 0;
+
+		while (i >= 0) {
+			int a = arr[i];
+			int b = arr[j];
+			int c = arr[k];
+			int d = arr[l];
+
+			if (a == b && a == c && a == d) {
+				area = a * a;
+				ct++;
+				i -= 4; j -= 4; k -= 4; l -= 4;
+			}
+
+			i--; j--; k--; l--;
+		}
+	}
+
+	//HashMap
+	public static ArrayList<Integer>  solve(int[] arr) {
+		Map<Integer, Integer> map = new HashMap<>();
+		for (int ele : arr) {
+			map.put(ele, map.getOrDefault(ele, 0) + 1);
+		}
+
+		int maxArea = -(int)1e9, maxSide = -(int)1e9, ct = 0;
+
+		for (int key : map.keySet()) {
+			int freq = map.get(key);
+			if (key > maxSide && freq >= 4) {
+				maxArea = key * key;
+				ct = freq / 4;
+				maxSide = key;
+			}
+		}
+
+		ArrayList<Integer> res = new ArrayList<>();
+		res.add(maxArea);
+		res.add(ct);
+		return res;
+	}
+
+
+	// Toppers Of Class (Redo)
+	public static class Pair implements Comparable<Pair> {
+		int marks;
+		int idx;
+
+		public Pair() {}
+
+		public Pair(int marks, int idx) {
+			this.marks = marks;
+			this.idx = idx;
+		}
+	}
+
+	public static int[] kToppers(int[] arr, int k) {
+		int n = arr.length;
+		Pair[] narr = new Pair[n];
+		for (int i = 0; i < n; i++) {
+			narr[i] = new Pair(arr[i], i);
+		}
+
+		Arrays.sort(narr, (a, b)-> {
+			if (a.marks != b.marks) {
+				return b.marks - a.marks;
+			} else {
+				return a.idx - b.idx;
+			}
+		});
+
+		int[] res = new int[k];
+		for (int i = 0; i < k; i++) {
+			Pair rp = pq.poll();
+			res[i] = rp.idx;
+		}
+
+		return res;
+	}
+
+	//Leaders in an Array
+
 }

@@ -18,6 +18,7 @@ public class advance_linkedlist {
 		}
 	}
 
+	//2nd mid
 	public static ListNode midNode2(ListNode head) {
 		if (head == null || head.next == null)
 			return head;
@@ -31,6 +32,7 @@ public class advance_linkedlist {
 		return slow;
 	}
 
+	//1st mid in even size
 	public static ListNode midNode(ListNode head) {
 		if (head == null || head.next == null)
 			return head;
@@ -124,7 +126,7 @@ public class advance_linkedlist {
 		return true;
 	}
 
-	//Fold
+	//Fold - 143. Reorder List
 	public static void fold(ListNode head) {
 		if (head == null || head.next == null) {
 			return;
@@ -132,21 +134,22 @@ public class advance_linkedlist {
 
 		ListNode mid = midNode(head);
 		ListNode nHead = mid.next;
-		mid.next = null;
+		mid.next = null;    //separate 2nd half , else causes cycle
 
 		nHead = reverse(nHead);
 
 		ListNode p1 = head, p2 = nHead;
 
+		//for odd len , p2 will be null first , for even same time
 		while (p2 != null) {
 
-			ListNode f1 = p1.next ;
+			ListNode f1 = p1.next ;  //catch
 			ListNode f2 = p2.next ;
 
-			p1.next = p2 ;
+			p1.next = p2 ;   //link
 			p2.next = f1 ;
 
-			p1 = f1;
+			p1 = f1;  //move
 			p2 = f2;
 
 		}
@@ -209,7 +212,7 @@ public class advance_linkedlist {
 		p1.next = p2;
 	}
 
-	//Merge 2 sorted LL
+	// 21. Merge Two Sorted Lists
 	public static ListNode mergeTwoLists(ListNode l1, ListNode l2) {
 		ListNode dummy = new ListNode(-1);
 		ListNode p = dummy;
@@ -285,6 +288,10 @@ public class advance_linkedlist {
 	}
 
 	//Remove nth node from end
+
+	//delete kth from end
+	// ptr 1 at n-k-1 th node , ptr 2 at n-k+1 th node
+	//delete middle one
 	public static ListNode removeNthFromEnd(ListNode head, int n) {
 		if (head.next == null) return null;
 		int len = 0;
@@ -352,73 +359,66 @@ public class advance_linkedlist {
 
 	//Segregate 0 - 1
 	public static ListNode segregate01(ListNode head) {
-		if (head == null || head.next == null)return head;
+		if (head == null || head.next == null)
+			return head;
 
-		ListNode d1 = new ListNode(-1);
-		ListNode d2 = new ListNode(-1);
-		ListNode p1 = d1 , p2 = d2;
-
-		ListNode curr = head;
+		ListNode one = new ListNode(-1);
+		ListNode zero = new ListNode(-1);
+		ListNode op = one, zp = zero, curr = head;
 
 		while (curr != null) {
-			ListNode fwd = curr.next; //preserve
-
-			//connect
-			//odd
-			if (curr.val == 1) {
-
-				curr.next = null;
-				p1.next = curr;
-				p1 = curr;
-
-				//move
-				curr = fwd;
+			if (curr.val != 0) {
+				op.next = curr;
+				op = op.next;
 			} else {
-				curr.next = null;
-				p2.next = curr;
-				p2 = curr;
-				curr = fwd;
+				zp.next = curr;
+				zp = zp.next;
 			}
-
+			curr = curr.next;
 		}
 
-		p2.next = d1.next;
+		zp.next = one.next;
+		op.next = null;
 
+		head = zero.next;
 
-		return d2.next;
+		zero.next = one.next = null;
+		return head;
 	}
 
 
 	//Segregate 0-1-2
 	public static ListNode segregate012(ListNode head) {
-		if (head == null || head.next == null)return head;
+		if (head == null || head.next == null)
+			return head;
 
-		ListNode zero = new ListNode(-1);
 		ListNode one = new ListNode(-1);
+		ListNode zero = new ListNode(-1);
 		ListNode two = new ListNode(-1);
-
-		ListNode p0 = zero, p1 = one , p2 = two , curr = head;
+		ListNode op = one, zp = zero, tp = two, curr = head;
 
 		while (curr != null) {
-			if (curr.val == 0) {
-				p0.next = curr;
-				p0 = p0.next;
-			} else if (curr.val == 1) {
-				p1.next = curr;
-				p1 = p1.next;
+			if (curr.val == 1) {
+				op.next = curr;
+				op = op.next;
+			} else if (curr.val == 0) {
+				zp.next = curr;
+				zp = zp.next;
 			} else {
-				p2.next = curr;
-				p2 = p2.next;
+				tp.next = curr;
+				tp = tp.next;
 			}
-
 			curr = curr.next;
 		}
 
-		p2.next = null;
-		p1.next = two.next;
-		p0.next = one.next;
+		//start link from back , else only 2 case fails
+		op.next = two.next;
+		zp.next = one.next;
+		tp.next = null;
 
-		return zero.next;
+		head = zero.next;
+		zero.next = one.next = two.next = null;
+		return head;
 	}
 
 	//Segregate Over Last Index
@@ -440,23 +440,16 @@ public class advance_linkedlist {
 		while (curr != null) {
 			ListNode fwd = curr.next; //preserve
 
-			//connect
-			//odd
 			if (curr.val <= last.val) {
-
 				curr.next = null;
 				p1.next = curr;
 				p1 = curr;
-
-				//move
-				curr = fwd;
-			} else { //first list
+			} else {
 				curr.next = null;
 				p2.next = curr;
 				p2 = curr;
-				curr = fwd;
 			}
-
+			curr = fwd;
 		}
 
 		p1.next = second.next;
@@ -497,7 +490,7 @@ public class advance_linkedlist {
 		return head;
 	}
 
-	//Add Two Numbers
+	//Add Two Numbers 2
 	public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 		ListNode d1 = reverse(l1);
 		ListNode d2 = reverse(l2);
