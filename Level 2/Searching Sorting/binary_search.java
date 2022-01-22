@@ -64,6 +64,70 @@ public class binary_search {
 		return idx;
 	}
 
+	// 74. Search a 2D Matrix
+	public boolean searchMatrix(int[][] matrix, int target) {
+		int row = findRow(matrix, target);
+		if (row == -1) return false;
+
+		return findVal(matrix, row, target);
+	}
+
+	public int findRow(int[][] mat, int val) {
+		int lo = 0, hi = mat.length - 1;
+
+		while (lo <= hi) {
+			int mid = lo + (hi - lo) / 2;
+
+			if (mat[mid][0] <= val && mat[mid][mat[0].length - 1] >= val) {
+				return mid;
+			} else if (val > mat[mid][mat[0].length - 1]) {
+				lo = mid + 1;
+			} else {
+				hi = mid - 1;
+			}
+		}
+		return -1;
+	}
+
+	public boolean findVal(int[][] mat, int row, int tar) {
+		int lo = 0, hi = mat[0].length - 1;
+
+		while (lo <= hi) {
+			int mid = lo + (hi - lo) / 2;
+
+			if (mat[row][mid] == tar) {
+				return true;
+			} else if (mat[row][mid] < tar) {
+				lo = mid + 1;
+			} else {
+				hi = mid - 1;
+			}
+		}
+		return false;
+	}
+
+	// 240. Search a 2D Matrix II
+	public boolean searchMatrix(int[][] matrix, int target) {
+		//all L shapes in matrix are sorted
+		//bottom left val is largest in 1st col, smallest in last row
+		int n = matrix.length, m = matrix[0].length;
+		int row = n - 1, col = 0;
+
+		while (row >= 0 && col < m) {
+			int mid = matrix[row][col];
+
+			if (mid == target) {
+				return true;
+			} else if (mid < target) {
+				col = col + 1;
+			} else {
+				row = row - 1;
+			}
+		}
+
+		return false;
+	}
+
 	//Find Transition point  , portal
 	public static int findTransition(int[]arr) {
 		int lo = 0;

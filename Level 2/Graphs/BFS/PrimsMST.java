@@ -155,6 +155,35 @@ public class PrimsMST {
         return ans;
     }
 
+
+    // Minimum Wire Required To Connect All Pcs
+    public static void MST(ArrayList<Edge>[]graph) {
+        boolean[] vis = new boolean[graph.length];
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+
+        pq.add(new Pair(0, -1, 0)); //dummy edge
+
+        while (pq.size() > 0) {
+            //rem
+            Pair rem = pq.remove();
+
+            //mark*
+            if (vis[rem.v] == true)continue;
+            vis[rem.v] = true;
+
+            //work
+            if (rem.aqv != -1)
+                System.out.println("[" + rem.v + "-" + rem.aqv + "@" + rem.wt + "]");
+
+            //add nbr
+            for (Edge edge : graph[rem.v]) {
+                if (vis[edge.nbr] == false) {
+                    pq.add(new Pair(edge.nbr, rem.v, edge.wt));
+                }
+            }
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 

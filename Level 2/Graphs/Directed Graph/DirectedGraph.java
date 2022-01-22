@@ -76,6 +76,38 @@ public class DirectedGraph {
         ans.add(src);
     }
 
+
+
+    //Order Of Compilation
+    public static void topoSort(ArrayList<Edge>[]graph) {
+        boolean[] vis = new boolean[graph.length];
+        Stack<Integer> st = new Stack<>();
+        for (int i = 0; i < graph.length; i++) {
+            if (vis[i] == false) {
+                DFS(graph, i, st, vis);
+            }
+        }
+
+        while (!st.isEmpty()) {
+            System.out.println(st.pop());
+        }
+    }
+
+    public static void DFS(ArrayList<Edge>[]graph, int src, Stack<Integer> st, boolean[] vis) {
+
+        //mark
+        vis[src] = true;
+
+        //nbrs
+        for (Edge edge : graph[src]) {
+            if (vis[edge.nbr] == false) {
+                DFS(graph, edge.nbr, st, vis);
+            }
+        }
+
+        st.push(src);
+    }
+
     // Kahn's Algorithm (Topological Sort)
     // Complexity O(E)+O(V)+O(E+V) = 2(E+V) -> O(E+V) -> O(N) (in graph E+V is N)
     /*************************************************************************************************************/

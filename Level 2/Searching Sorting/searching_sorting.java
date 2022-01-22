@@ -93,6 +93,46 @@ public class searching_sorting {
 
 
 	// Search A 2d Matrix
+	public boolean searchMatrix(int[][] matrix, int target) {
+		int row = findRow(matrix, target);
+		if (row == -1) return false;
+
+		return findVal(matrix, row, target);
+	}
+
+	public int findRow(int[][] mat, int val) {
+		int lo = 0, hi = mat.length - 1;
+
+		while (lo <= hi) {
+			int mid = lo + (hi - lo) / 2;
+
+			if (mat[mid][0] <= val && mat[mid][mat[0].length - 1] >= val) {
+				return mid;
+			} else if (val > mat[mid][mat[0].length - 1]) {
+				lo = mid + 1;
+			} else {
+				hi = mid - 1;
+			}
+		}
+		return -1;
+	}
+
+	public boolean findVal(int[][] mat, int row, int tar) {
+		int lo = 0, hi = mat[0].length - 1;
+
+		while (lo <= hi) {
+			int mid = lo + (hi - lo) / 2;
+
+			if (mat[row][mid] == tar) {
+				return true;
+			} else if (mat[row][mid] < tar) {
+				lo = mid + 1;
+			} else {
+				hi = mid - 1;
+			}
+		}
+		return false;
+	}
 
 
 	// Search A 2d Matrix - 2

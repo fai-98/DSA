@@ -17,6 +17,88 @@ public class DFSQuestions_02 {
         }
     }
 
+    //Perfect Friends
+    public static int perfectFriends(ArrayList<Integer>[]graph) {
+        boolean[] vis = new boolean[graph.length];
+        ArrayList<ArrayList<Integer>> cc = new ArrayList<>();
+
+        for (int src = 0; src < graph.length; src++) {
+            if (vis[src] == false) {
+                ArrayList<Integer> scc = new ArrayList<>();
+                getSCC(graph, src, scc, vis);
+                cc.add(scc);
+            }
+        }
+
+        int count = 0;
+
+        for (int i = 0; i < cc.size(); i++) {
+            for (int j = i + 1; j < cc.size(); j++) {
+                int s1 = cc.get(i).size();
+                int s2 = cc.get(j).size();
+
+                count += s1 * s2;
+            }
+        }
+
+        return count;
+
+
+    }
+
+    public static void getSCC(ArrayList<Integer>[]graph, int src, ArrayList<Integer> scc, boolean[] vis) {
+        //self
+        scc.add(src);
+
+        //mark
+        vis[src] = true;
+
+        //nbrs
+        for (int nbr : graph[src]) {
+            if (vis[nbr] == false) {
+                getSCC(graph, nbr, scc, vis);
+            }
+        }
+
+        return;
+    }
+
+
+
+    // 797. All Paths From Source to Target
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        path.add(0);
+        boolean[] vis = new boolean[graph.length];
+        dfs(0, graph.length - 1, res, path, graph, vis);
+        return res;
+    }
+
+    public void dfs(int src, int des, List<List<Integer>> res, List<Integer> path, int[][] graph, boolean[] vis) {
+
+        //self check
+        if (src == des) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+
+        //mark
+        vis[src] = true;
+
+        //unvis nbrs
+        for (int nbr : graph[src]) {
+            if (vis[nbr] == false) {
+                path.add(nbr);
+                dfs(nbr, des, res, path, graph, vis);
+                path.remove(path.size() - 1);
+            }
+        }
+
+        vis[src] = false;
+    }
+
+
     // #200numberOfIsland
     public int numIslands(char[][] grid) {
         int islands = 0;

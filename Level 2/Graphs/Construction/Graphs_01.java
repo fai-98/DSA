@@ -198,4 +198,34 @@ public class Graphs_01 {
         constructGraph();
     }
 
+    //Is Graph COnnected ?
+    public static void isConnected(ArrayList<Edge>[] graph, int src, boolean[] vis) {
+
+
+        vis[src] = true;
+
+        for (Edge edge : graph[src]) {
+            int nbr = edge.nbr;
+            if (vis[nbr] == false) {
+                isConnected(graph, nbr, vis);
+            }
+        }
+
+        return ;
+    }
+
+    // Check
+    // boolean[] vis = new boolean[graph.length];
+    //   isConnected(graph,0,vis);
+    //   boolean ans = true;
+
+    //   for(int i=0; i<vis.length; i++){
+    //       if(vis[i]==false){
+    //           ans=false;
+    //           break;
+    //       }
+    //   }
+
+    //   System.out.println(ans);
+
 }

@@ -302,4 +302,22 @@ public class anagram {
 	}
 
 	// 554. Brick Wall
+	public int leastBricks(List < List < Integer >> wall) {
+		//The Vertical Line with most no. of gaps will have least cuts
+		Map < Integer, Integer > map = new HashMap < > (); //index, no. of gaps
+		int max = 0, layers = wall.size();
+		for (List < Integer > layer : wall) {
+			int preSum = 0;
+			for (int i = 0; i < layer.size() - 1; i++) { //ignore last brick
+				int sz = layer.get(i);
+				preSum += sz;
+				map.put(preSum, map.getOrDefault(preSum, 0) + 1);
+
+				//update max
+				max = Math.max(map.get(preSum), max);
+			}
+		}
+
+		return layers - max;
+	}
 }

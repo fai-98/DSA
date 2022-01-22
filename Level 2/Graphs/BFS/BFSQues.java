@@ -27,6 +27,47 @@ public class BFSQues {
      * vis (i.e store the dist , or use vis arr etc.))
      */
 
+
+    //Spread Of Infection
+    public static int infection(ArrayList<Edge>[]graph, int src, int t) {
+        int count = 0;
+        boolean[] vis = new boolean[graph.length];
+        Queue<Integer> q = new ArrayDeque<>();
+        q.add(src);
+
+
+        while (q.size() > 0 && t > 0) {
+
+
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+
+                //rem
+                int rem = q.remove();
+
+                //mark*
+                if (vis[rem] == true) {
+                    continue;
+                } else {
+                    vis[rem] = true;
+                    count++;
+                }
+
+                for (Edge edge : graph[rem]) {
+                    int nbr = edge.nbr;
+                    if (vis[nbr] == false) {
+                        q.add(nbr);
+
+                    }
+                }
+            }
+
+            t--;
+        }
+
+        return count;
+    }
+
     // 08/July/2021******************************************************************************************************
     // 994. Rotting Oranges
     public int orangesRotting(int[][] grid) {
