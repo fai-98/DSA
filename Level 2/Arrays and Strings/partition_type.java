@@ -64,36 +64,63 @@ public class partition_type {
 	// Leetcode 75. Sort Colors
 	//3 way partition - sort 0 , 1 ,2 (colors)
 
-	public void sortColors(int[] a) {
-		int n = a.length;
-		int lo = 0, mid = 0, hi = n - 1;
-		int temp;
+	// 0 , lo-1 = zeroes
+	// lo , mid-1 = Ones
+	// mid , hi-1 = unknowns
+	// hi , n-1 = twos
 
-		while (mid <= hi) {
-			switch (a[mid]) {
-			case 0: {
-				temp = a[lo];
-				a[lo] = a[mid];
-				a[mid] = temp;
-				lo++;
-				mid++;
-				break;
-			}
+	public void sortColors(int[] arr) {
+		int i = 0, j = 0, k = arr.length - 1;
 
-			case 1:
-				mid++;
-				break;
-
-			case 2: {
-				temp = a[mid];
-				a[mid] = a[hi];
-				a[hi] = temp;
-				hi--;
-				break;
-			}
-
+		while (j <= k) {
+			if (arr[j] == 0) {
+				swap(arr, i, j);
+				i++;
+				j++;
+			} else if (arr[j] == 1) {
+				j++;
+			} else {
+				swap(arr, j, k);
+				k--;
+				//not j++, coz arr[k] can return 1 also
 			}
 		}
+	}
+
+	// 26. Remove Duplicates from Sorted Array
+	public int removeDuplicates(int[] nums) {
+		if (nums.length == 0) return 0;
+		int i = 0;
+		for (int j = 1; j < nums.length; j++) {
+			if (nums[i] != nums[j]) {
+
+				nums[i + 1] = nums[j];
+				i++;
+			}
+		}
+		return i + 1;
+	}
+
+
+	// 27. Remove Element
+	public int removeElement(int[] nums, int val) {
+		int n = nums.length;
+		int i = 0, j = 0;
+
+		while (j < n) {
+			if (nums[j] != val) {
+				int temp = nums[i];
+				nums[i] = nums[j];
+				nums[j] = temp;
+
+				i++;
+				j++;
+			} else {
+				j++;
+			}
+		}
+
+		return i;
 	}
 
 
@@ -160,4 +187,108 @@ public class partition_type {
 	}
 
 	// O(n) soln ?
+
+
+	//Partition on Pivot
+	public int partition(int[] arr, int pivot, int lo, int hi) {
+		//pivot is arr[hi], if not
+		//swap(arr,pivotIdx,hi);
+
+		int i = lo, j = lo;
+		while (j <= hi) {
+			if (arr[j] <= pivot) {
+				swap(arr, i, j);
+				i++;
+				j++;
+			} else {
+				j++;
+			}
+		}
+
+		return (i - 1);
+	}
+
+	//Quick Sort Algorithm
+	public int[] sortArray(int[] nums) {
+		quickSort(nums, 0, nums.length - 1);
+		return nums;
+	}
+
+	public void quickSort(int[] arr, int lo, int hi) {
+		if (lo >= hi) {
+			return;
+		}
+
+		int pivotIndex = partition(arr, arr[hi] , lo , hi);
+		quickSort(arr, lo, pivotIndex - 1);
+		quickSort(arr, pivotIndex + 1 , hi);
+
+	}
+
+	public int partition(int[] arr, int pivot, int lo, int hi) {
+		int i = lo, j = lo;
+		while (j <= hi) {
+			if (arr[j] <= pivot) {
+				swap(arr, i, j);
+				i++;
+				j++;
+			} else {
+				j++;
+			}
+		}
+
+		return (i - 1);
+	}
+
+	public void swap(int[] arr, int i, int j) {
+		int temp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp;
+	}
+
+	//Quick Select Algorithm - kth largest/smallest
+
+	//code for kth smallest , for largest find (n-k)th smallest
+	//select pivot = arr[hi] , after part it is at correct idx
+	//if idx < k , recur right side , else idx>k recur left side
+	// idx == k means kth smallest ele was selected as pivot and now it is at correct pos..
+	public int findKthLargest(int[] nums, int k) {
+		// (n-k)th smallest
+		return quickSelect(nums, 0, nums.length - 1, nums.length - k);
+	}
+
+	public int quickSelect(int[] arr, int lo, int hi, int k) {
+
+		int pivotIndex = partition(arr, arr[hi] , lo , hi);
+
+		if (pivotIndex > k) {
+			return quickSelect(arr, lo, pivotIndex - 1, k);
+		} else if (pivotIndex < k) {
+			return quickSelect(arr, pivotIndex + 1, hi, k);
+		} else {
+			return arr[pivotIndex];
+		}
+	}
+
+	public int partition(int[] arr, int pivot, int lo, int hi) {
+		int i = lo, j = lo;
+		while (j <= hi) {
+			if (arr[j] <= pivot) {
+				swap(arr, i, j);
+				i++;
+				j++;
+			} else {
+				j++;
+			}
+		}
+
+		return (i - 1);
+	}
+
+	public void swap(int[] arr, int i, int j) {
+		int temp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp;
+	}
+
 }

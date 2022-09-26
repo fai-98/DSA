@@ -9,9 +9,11 @@ class Solution {
 			int new_buy_state = 0;
 			int new_sell_state = 0;
 
+			//new buy on prev sell (max of new buy , prev buy)
 			new_buy_state = old_sell_state - prices[i];
 			new_buy_state = Math.max(new_buy_state, old_buy_state);
 
+			//new sell on prev buy ( max of new sell, prev sell) when sell fee also applied
 			new_sell_state = old_buy_state + prices[i] - fee;
 			new_sell_state = Math.max(old_sell_state, new_sell_state);
 

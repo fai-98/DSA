@@ -1,6 +1,7 @@
 public class max_num_of_k_sum_pairs {
 	// 1679. Max Number of K-Sum Pairs
 
+	//after sorting this is same as 167. Two Sum II - Input Array Is Sorted / Pair With Given Sum
 	public int maxOperations(int[] nums, int k) {
 		// nlog(n)
 		//find number of disjoint two sum pairs , can be dups

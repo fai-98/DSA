@@ -89,6 +89,28 @@ public class morris_traversal {
         return true;
     }
 
+    //Iterative Inorder
+    public boolean isValidBST(TreeNode root) {
+        TreeNode prev = null;
+        TreeNode curr = root;
+
+        Stack<TreeNode> st = new Stack<>();
+
+        while (curr != null || st.size() > 0) {
+            while (curr != null) {
+                st.push(curr);
+                curr = curr.left;
+            }
+            curr = st.pop();
+            if (prev != null && curr.val <= prev.val) return false;
+            prev = curr;
+            curr = curr.right;
+        }
+
+        return true;
+    }
+
+
     // #98 validate BST using Morris T:O(3N) , S:O(1)
     public static boolean validateMorris(TreeNode root) {
         TreeNode prev = null;

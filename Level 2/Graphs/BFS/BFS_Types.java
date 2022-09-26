@@ -89,7 +89,7 @@ public class BFS_Types {
         }
     }
 
-    // When Cycle detection is needed - > S : O(E)
+    // When Cycle detection is needed - > S : O( V + E)
     public static void BFS_Cycle(ArrayList<Edge>[] graph, int src, boolean[] vis) {
         Queue<Integer> q = new ArrayDeque<>();
         int level = 0;
@@ -126,6 +126,23 @@ public class BFS_Types {
             System.out.println();
             level++;
         }
+    }
+
+    public static void isGraphCyclic() {
+        boolean[] vis = new boolean[graph.length];
+        boolean res = false;
+        for (int i = 0; i < graph.length; i++) {
+            if (vis[i] == false) {
+                if (isCyclic(graph, i, vis)) {
+                    res = true;
+                    System.out.println(true);
+                    break;
+                }
+            }
+        }
+        if (!res)System.out.println(false);
+        //must check if not cyclic then only print false ,
+        // other wise true false both get printed
     }
 
     public static void main(String[] args) throws Exception {

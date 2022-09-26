@@ -13,8 +13,6 @@ public class bst_construction {
 		}
 	}
 
-
-
 	public static Node construct(int[] arr , int lo, int hi) {
 		if (lo > hi)return null;
 
@@ -26,6 +24,10 @@ public class bst_construction {
 
 		return node;
 	}
+
+
+	//construct from unsorted array
+
 
 	public static void display(Node node) {
 		if (node == null) {

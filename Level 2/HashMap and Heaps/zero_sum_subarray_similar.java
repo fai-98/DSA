@@ -213,6 +213,51 @@ public class zero_sum_subarray_similar {
 	}
 
 
+	// 128. Longest Consecutive Sequence - Interesting Concept
+	// A1. Brute Force - O(n^3)
+	// Select every element one by one , find ele+1 in array while it exists
+	// for(select element)
+	// 	while(arr contains (ele+1))
+	// 		ans += 1 ; ele +=1
+
+	// A2. Sorting n*logn
+
+	// A3. Set O(n)
+	public int longestConsecutive(int[] nums) {
+		Set < Integer > set = new HashSet < > ();
+		for (int num : nums) {
+			set.add(num);
+		}
+
+		int len = 1;
+		int maxLen = 0;
+
+		//find smallest val from which seq can start -> val-1 does not exist
+		//start building sequence by finding val+1 , it is surely longest with val as st
+		//also remove from set
+		//build another sequence when this ends
+		for (int num : nums) {
+			if (!set.contains(num - 1)) {
+				//it shd be smallest in sequence then we look for ..
+
+				while (set.contains(num + 1)) { //build sequence
+					len++;
+					num += 1;
+					set.remove(num); //remove coz it is part of longest possible
+				}
+
+				if (len > maxLen) { //update max
+					maxLen = len;
+				}
+			}
+
+			len = 1; //reset len for new seq
+		}
+
+		return maxLen;
+	}
+
+
 	// Count Of Subarrays With Equal Number Of 0s 1s And 2s
 	public static int solution(int[] arr) {
 		Map<String, Integer> map = new HashMap<>();
@@ -273,6 +318,60 @@ public class zero_sum_subarray_similar {
 
 		for (int ele : l2) {
 			System.out.print(ele + " ");
+		}
+	}
+
+	// 1679. Max Number of K-Sum Pairs
+	public int maxOperations(int[] nums, int k) {
+		Map < Integer, Integer > map = new HashMap < > ();
+		int res = 0;
+		for (int ele : nums) {
+			int tar = k - ele;
+			if (map.containsKey(tar) && map.get(tar) > 0) {
+				res++;
+				map.put(tar, map.get(tar) - 1);
+			} else {
+				map.put(ele, map.getOrDefault(ele, 0) + 1);
+			}
+		}
+
+		return res;
+	}
+
+
+	//Longest Consecutive Sequence of Elements
+	public void fun(int[] arr) {
+		Map<Integer, Boolean> map = new HashMap<>();
+		for (int num : arr) {
+			map.put(num, map.getOrDefault(num, true));
+		}
+
+		for (int num : arr) {
+			if (map.containsKey(num - 1)) {
+				map.put(num, false);
+			}
+		}
+
+		int st = 0;
+		int maxLen = 0;
+
+		for (int i = 0; i < n; i++) {
+			int len = 0;
+			if (map.get(arr[i]) == true) {
+				int num = arr[i];
+				while (map.containsKey(num)) {
+					num += 1;
+					len++;
+				}
+				if (len > maxLen) {
+					maxLen = len;
+					st = arr[i];
+				}
+			}
+		}
+
+		for (int i = 0; i < maxLen; i++) {
+			System.out.println(st++);
 		}
 	}
 }

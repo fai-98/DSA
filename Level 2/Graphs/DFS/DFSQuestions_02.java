@@ -151,32 +151,92 @@ public class DFSQuestions_02 {
     // 1-> using static var , 2-> using size (same logic as in trees)
 
     public int maxAreaOfIsland(int[][] grid) {
-        int max = -(int) 1e9;
+        int max = -(int)1e9;
+        int[][] dir = {{ -1, 0}, {0, -1}, {1, 0}, {0, 1}} ;
+
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j] == 1) {
-                    max = Math.max(max, dfs(grid, i, j));
+                    int size = dfs_dir(grid, i, j, dir);
+                    max = Math.max(max, size);
                 }
             }
         }
-        return max == -(int) 1e9 ? 0 : max;
+        return max == -(int)1e9 ? 0 : max;
     }
 
-    public int dfs(int[][] grid, int r, int c) {
-        if (r < 0 || c < 0 || r >= grid.length || c >= grid[0].length || grid[r][c] == 0)
-            return 0;
-
-        // increase area
-        int size = 0;
+    public int dfs_dir(int[][] grid, int i, int j, int[][] dir) {
         // mark
-        grid[r][c] = 0;
-        // TLDR;
-        size += dfs(grid, r - 1, c);
-        size += dfs(grid, r, c - 1);
-        size += dfs(grid, r + 1, c);
-        size += dfs(grid, r, c + 1);
+        grid[i][j] = 0;
+
+        int n = grid.length, m = grid[0].length, size = 0;
+
+        for (int d = 0; d < 4; d++) {
+            int r = i + dir[d][0];
+            int c = j + dir[d][1];
+
+            // proactive call
+            if (r >= 0 && c >= 0 && r < n && c < m && grid[r][c] == 1) {
+                size = size + dfs_dir(grid, r, c, dir);
+            }
+        }
 
         return size + 1;
+    }
+
+    //Using Union-Find
+    int[] par;
+    public int maxAreaOfIsland(int[][] grid) {
+        int n = grid.length, m = grid[0].length, maxSize = 0;
+        par = new int[n * m];
+        int[] size = new int[n * m];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                par[i * m + j] = i * m + j;
+                size[i * m + j] = 1;
+            }
+        }
+
+        int[][] dir = { { 1, 0 }, { 0, 1 } }; // only down , right needed for DSU
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    int myIdx = i * m + j;
+                    int p1 = findPar(myIdx);
+
+                    for (int d = 0; d < 2; d++) {
+                        int r = i + dir[d][0];
+                        int c = j + dir[d][1];
+
+                        if (r < n && c < m && grid[r][c] == 1) {
+                            int nbrIdx = r * m + c;
+                            int p2 = findPar(nbrIdx);
+
+                            // belongs to diff set , so merge and size inc
+                            if (p1 != p2) {
+                                par[p2] = p1;
+                                size[p1] += size[p2];
+                            }
+
+                        }
+
+                    }
+                    maxSize = Math.max(maxSize, size[p1]);
+                }
+            }
+        }
+
+        return maxSize;
+    }
+
+    public int findPar(int u) {
+        if (par[u] == u)
+            return u;
+        return par[u] = findPar(par[u]);
+
+        // return par[u] == u ? u : par[u] = find(par[u]);
     }
 
     // 463. Island Perimeter
@@ -237,6 +297,11 @@ public class DFSQuestions_02 {
 
     // 130. Surrounded Regions
 
+    // Water filling analogy
+    // if O is at boundary water can be filled to all connected O's
+    // else water can never reach
+    // mark all O's connected to boundary
+    // all O's left are our ans
     public void solve(char[][] board) {
         int n = board.length, m = board[0].length;
         for (int i = 0; i < n; i++) {
@@ -306,6 +371,80 @@ public class DFSQuestions_02 {
 
             if (r >= 0 && c >= 0 && r < grid.length && c < grid[0].length && grid[r][c] == 1) {
                 dfs(grid, r, c, dir);
+            }
+        }
+    }
+
+
+    // 417. Pacific Atlantic Water Flow - similar
+
+    // dfs 1 - reach all from pacific and mark as  -1 in vis arr
+    // dfs 2 - reach all from atlantic ocean and if we see -1 already this cell is ans
+    // add to ans and contiue dfs , dont return from here
+    // also mark your -2
+    // if reach from atlantic and 1 is there -> already from pacific it is ans
+
+    List < List < Integer >> res;
+    public List < List < Integer >> pacificAtlantic(int[][] heights) {
+        res = new ArrayList < > ();
+        int n = heights.length, m = heights[0].length;
+
+        int[][] vis = new int[n][m];
+
+        int[][] dir = {
+            { -1, 0}, {0, -1}, {1, 0}, {0, 1}
+        };
+
+        //dfs from pacific and mark all reachable cells
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (i == 0 || j == 0) {
+                    dfs_pacific(heights, i, j, dir, vis);
+                }
+            }
+        }
+        //for atlantic
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (i == n - 1 || j == m - 1) {
+                    dfs_atlantic(heights, i, j, dir, vis);
+                }
+            }
+        }
+
+        return res;
+
+    }
+
+    public void dfs_pacific(int[][] grid, int sr, int sc, int[][] dir, int[][] vis) {
+
+        vis[sr][sc] = -1;
+
+        for (int d = 0; d < 4; d++) {
+            int r = sr + dir[d][0];
+            int c = sc + dir[d][1];
+
+            if (r >= 0 && c >= 0 && r < grid.length && c < grid[0].length && grid[r][c] >= grid[sr][sc] && vis[r][c] != -1) {
+                dfs_pacific(grid, r, c, dir, vis);
+            }
+        }
+    }
+
+    public void dfs_atlantic(int[][] grid, int sr, int sc, int[][] dir, int[][] vis) {
+
+        if (vis[sr][sc] == -1) {
+            List<Integer> cell = new ArrayList<>();
+            cell.add(sr); cell.add(sc);
+            res.add(cell);
+        }
+        vis[sr][sc] = -2;
+
+        for (int d = 0; d < 4; d++) {
+            int r = sr + dir[d][0];
+            int c = sc + dir[d][1];
+
+            if (r >= 0 && c >= 0 && r < grid.length && c < grid[0].length && grid[r][c] >= grid[sr][sc] && vis[r][c] != -2) {
+                dfs_atlantic(grid, r, c, dir, vis);
             }
         }
     }

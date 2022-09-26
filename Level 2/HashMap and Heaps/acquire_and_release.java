@@ -175,7 +175,8 @@ public class acquire_and_release {
 				acFlag = true;
 			}
 
-			//Release until valid / make window invalid
+			//extra/rep chars are present
+			//Release until window is valid again
 			while (extra > 0) {
 				//rel
 				char ch = str.charAt(st);
@@ -389,7 +390,7 @@ public class acquire_and_release {
 			Set<Integer> set = new HashSet<>();
 
 			for (int j = i; j < arr.length; j++) {
-				if (set.contains(arr[j])) {
+				if (set.contains(arr[j])) { //for dups
 					break;
 				}
 				set.add(arr[j]);
@@ -615,6 +616,56 @@ public class acquire_and_release {
 		}
 
 		return count;
+	}
+
+
+	// 904. Fruit Into Baskets
+	public int totalFruit(int[] arr) {
+		Map < Integer, Integer > map = new HashMap < > ();
+		int acq = -1, rel = -1, len = 0;
+
+		while (acq < arr.length - 1) {
+			acq++;
+			int num = arr[acq];
+
+			//acquire
+			map.put(num, map.getOrDefault(num, 0) + 1);
+
+			while (map.size() > 2) {
+				rel++;
+				num = arr[rel];
+				if (map.get(num) == 1) {
+					map.remove(num);
+				} else {
+					map.put(num, map.get(num) - 1);
+				}
+			}
+			//if we reach here, it is surely valid win , update max
+			len = Math.max(len, acq - rel);
+		}
+
+		return len;
+	}
+
+	// 187. Repeated DNA Sequences
+	public List < String > findRepeatedDnaSequences(String s) {
+		List < String > res = new ArrayList < > ();
+		int n = s.length();
+		if (s == null || n <= 10) return res;
+		Set < String > set = new HashSet < > ();
+		Set < String > vis = new HashSet < > ();
+
+		int i = 0, j = 10;
+		while (j <= s.length()) {
+			String str = s.substring(i, j);
+			if (set.contains(str) && !vis.contains(str)) {
+				res.add(str);
+				vis.add(str);
+			} else set.add(str);
+			i++;
+			j++;
+		}
+		return res;
 	}
 
 }

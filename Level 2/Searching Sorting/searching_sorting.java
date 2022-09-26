@@ -92,7 +92,7 @@ public class searching_sorting {
 	}
 
 
-	// Search A 2d Matrix
+	// 74. Search a 2D Matrix
 	public boolean searchMatrix(int[][] matrix, int target) {
 		int row = findRow(matrix, target);
 		if (row == -1) return false;
@@ -173,6 +173,32 @@ public class searching_sorting {
 		}
 		System.out.println("-1");
 	}
+
+	//What if negatives are present ?
+
+	// if diff is -ve , just make it +ve
+	// if pair(i,j) is found with diff = d = j-i
+	// it means pair i-j has diff = -d
+	public int solve(ArrayList<Integer> arr, int target) {
+		Collections.sort(arr);
+		if (target < 0) target = -target;
+		int lo = 0;
+		int hi = 1;
+
+		while (hi < arr.size() && lo <= hi ) {
+			int diff = arr.get(hi) - arr.get(lo);
+			if (diff == target && lo != hi) {
+				return 1;
+			} else if (diff > target) {
+				lo++;
+			} else {
+				hi++;
+			}
+		}
+
+		return 0;
+	}
+
 
 	//Roof top , portal , similar to buy sell stock 1
 	public static int findMaxSteps(int[]arr) {

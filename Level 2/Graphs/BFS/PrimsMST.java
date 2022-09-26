@@ -132,7 +132,9 @@ public class PrimsMST {
         int src = 0;
         int ans = 0;
         PriorityQueue<Edge> queue = new PriorityQueue<>();
+
         queue.add(new Edge(src, 0));
+
         boolean[] visited = new boolean[vtces];
         while (queue.size() > 0) {
             Edge rem = queue.remove();

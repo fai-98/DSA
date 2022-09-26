@@ -34,7 +34,7 @@ public class burning_tree {
 	}
 
 
-	public static ?? ?? NodeToRootPath(TreeNode root, int data, ArrayList<TreeNode> ans) {
+	public static void NodeToRootPath(TreeNode root, int data, ArrayList<TreeNode> ans) {
 
 	}
 
@@ -231,64 +231,6 @@ public class burning_tree {
 
 	//burning tree with water
 
-	// #236 -> LCA Lowest Common Ancestor simple sol
-	// T - O(3N) S - O(2N)
-	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-		List<TreeNode> list1 = nodeToRootPath(root, p);
-		List<TreeNode> list2 = nodeToRootPath(root, q);
-
-		int p1 = list1.size() - 1;
-		int p2 = list2.size() - 1;
-
-		while (p1 >= 0 && p2 >= 0) {
-			if (list1.get(p1) == list2.get(p2)) {
-				p1--;
-				p2--;
-			} else {
-				break;
-			}
-		}
-
-		return list1.get(p1 + 1);
-
-	}
-
-	// Optimized T: O(N) , S: O(1)
-	static TreeNode LCA;
-	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-		LCA = null;
-		isPresent(root, p, q);
-		return LCA;
-	}
-
-	public boolean isPresent(TreeNode node , TreeNode p, TreeNode q) {
-		if (node == null)return false;
-
-		boolean lans = isPresent(node.left, p, q);
-		boolean rans = isPresent(node.right, p, q);
-		boolean self = (node == p || node == q);
-		if (self && lans || self && rans || lans && rans) {
-			LCA = node;
-			return true;
-		}
-		return (node == p || node == q) || lans || rans;
-
-	}
-
-
-	//LCA try without boolean
-	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-		if (root == null)return null;
-
-		TreeNode L = lowestCommonAncestor(root.left, p, q);
-		TreeNode R = lowestCommonAncestor(root.right, p, q);
-		TreeNode self = (root == p || root == q) ? root : null;
-		if ((L != null && R != null) || (self != null && L != null) || (self != null && R != null)) {
-			return root;  //return root , not self coz  in L&&R case self is null
-		}
-
-		return L != null ? L : R != null ? R : self != null ? self : null;
-	}
 
 	/*
 	Burning Tree With water , given arrayList of TreeNodes/Vals(Unique) containing water

@@ -86,4 +86,45 @@ public class ClimbStairs {
         }
         return Math.min(a, b);
     }
+
+
+    // 45. Jump Game II
+    public int jump(int[] nums) {
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, (int)1e9);
+        return min_jumps(nums, 0, nums.length - 1, dp);
+        // return tab(nums);
+    }
+
+    public int min_jumps(int[] nums , int idx , int end, int[] dp) {
+
+        if (idx == end) {
+            return dp[idx] = 0;
+        }
+
+        if (dp[idx] != (int)1e9) {
+            return dp[idx];
+        }
+
+        int ans = (int)1e9;
+        for (int jump = 1; jump <= nums[idx]; jump++) {
+            if (idx + jump <= end) {
+                ans = Math.min(ans , 1 + min_jumps(nums, idx + jump, end, dp));
+            }
+        }
+
+        return dp[idx] = ans;
+    }
+
+    // 55. Jump Game
+    public boolean canJump(int[] nums) {
+        int gap = 1;
+        for (int i = nums.length - 2; i >= 0; i--) {
+            if (i == 0 && nums[i] >= gap) return true;
+            if (nums[i] >= gap) gap = 1;
+            if (nums[i] < gap) gap++;
+        }
+
+        return nums.length == 1 ? true : false;
+    }
 }

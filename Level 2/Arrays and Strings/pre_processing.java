@@ -53,6 +53,7 @@ public class pre_processing {
 		return res;
 	}
 
+	//A2. only 1 array
 	// or,
 	// maintain left product in running time and solve
 	//     int leftprod = 1;
@@ -60,6 +61,31 @@ public class pre_processing {
 	//         res[i] = leftprod * rightProduct[i + 1];
 	//         leftprod *= nums[i];
 	//     }
+
+	//A3. O(1) space
+	public int[] productExceptSelf(int[] nums) {
+		int n = nums.length;
+		int[] res = new int[n];
+		int prod = 1;
+		//need pre[i] * suf[i]
+
+		// store all prefix prod in res array itself pre[i]
+		for (int i = 0; i < n; i++) {
+			res[i] = prod;  //when i == 0 , prod is 1 coz no ele at left
+			prod *= nums[i];
+		}
+
+		// multiply all suf[i] on stored pre[i] , while looping
+		prod = 1;
+		for (int i = n - 1; i >= 0; i--) {
+			res[i] *= prod;  //n-1 prod is 1 , no ele on right
+			prod *= nums[i];
+		}
+
+		return res;
+
+		//what we did with pre[] prod and suf[] pro can be easily done on the res array itself
+	}
 
 
 	// leetcode 849. https://leetcode.com/problems/maximize-distance-to-closest-person/

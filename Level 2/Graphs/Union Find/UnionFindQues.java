@@ -288,4 +288,75 @@ public class UnionFindQues {
         System.out.println(ans);
     }
 
+
+    // cycle in Undirected Graph using Union Find
+    // https://www.interviewbit.com/problems/cycle-in-undirected-graph/
+
+    public int solve(int A, int[][] B) {
+        int[] par = new int[A];
+        for (int i = 0; i < A; i++) {
+            par[i] = i;
+        }
+
+        //Union Find
+        for (int[] edge : B) {
+            int u = edge[0] - 1;
+            int v = edge[1] - 1;
+
+            int p1 = findPar(u, par);
+            int p2 = findPar(v, par);
+
+            if (p1 != p2) {  //no cycle
+                par[p2] = p1;
+            } else {         // a , b have edge with c , now they also have edge -> cycle = true
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    public int findPar(int u, int[] par) {
+        if (par[u] == u)return u;
+        return par[u] = findPar(par[u], par);
+    }
+
+    // 178 · Graph Valid Tree - Lintcode
+    public boolean validTree(int n, int[][] edges) {
+        //Conditions for tree
+        // 1. GCC = 1
+        // 2. edges for n nodes = n-1
+        // 3. no cycle
+
+        if (n <= 0 || edges == null || edges.length != n - 1) return false;
+        int GCC = n;  //no of nodes
+        int[] par = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            par[i] = i;
+        }
+
+        for (int [] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+
+            int p1 = findPar(u, par);
+            int p2 = findPar(v, par);
+
+            if (p1 == p2) {    //cycle cond..3
+                return false;
+            } else {
+                par[p1] = p2;  // GCC count cond..1
+                GCC--;
+            }
+        }
+
+        return GCC == 1;
+    }
+
+    public int findPar(int u, int[] par) {
+        if (par[u] == u) return u;
+        return par[u] = findPar(par[u], par);
+    }
+
 }

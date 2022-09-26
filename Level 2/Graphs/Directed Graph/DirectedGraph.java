@@ -50,7 +50,7 @@ public class DirectedGraph {
     // Topological Sort Recursive only DAG (Directed Acyclic Graph)
     // *******************************************************************************************************
 
-    // call dfs from every unvis nbr
+    // call dfs from every unvis src
     public static void topologicalSort(ArrayList<Edge>[] graph) {
         ArrayList<Integer> ans = new ArrayList<>();
 
@@ -105,7 +105,7 @@ public class DirectedGraph {
             }
         }
 
-        st.push(src);
+        st.push(src); //while backtracking
     }
 
     // Kahn's Algorithm (Topological Sort)
@@ -183,6 +183,8 @@ public class DirectedGraph {
         return isCycle;
     }
 
+    // -1-> unvisited , 0-> part of current path , 1-> backtracked (i.e part of prev
+    // path)
     public boolean dfs_topo_isCycle(ArrayList<Edge>[] graph, int src, int[] vis, ArrayList<Integer> ans) {
         vis[src] = 0;
         boolean res = false;

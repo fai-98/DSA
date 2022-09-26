@@ -103,4 +103,70 @@ public class inorder_pre_suc {
 		System.out.println("PRED-> " + pred.val + "  " + "SUCC-> " + succ.val);
 
 	}
+
+
+	//kth Largest in BST
+
+	public int kthLargest(TreeNode root, int k) {
+		TreeNode curr = root;
+		while (curr != null) {
+			TreeNode right = curr.right;
+			if (right == null) {
+				if (k-- == 1)
+					return curr.data;
+				curr = curr.left;
+			} else {
+				TreeNode lMost = getLeftMost(right, curr);
+				if (lMost.left == null) {
+					lMost.left = curr;
+					curr = curr.right;
+				} else {
+					lMost.left = null;
+					if (k-- == 1)
+						return curr.data;
+					curr = curr.left;
+				}
+			}
+		}
+		return -1;
+	}
+
+	// 98. Validate Binary Search Tree
+	boolean checkBST(Node root) {
+		//MORRIS TRAVERSAL S: O(1) , T:O(3N)
+		Node prev = null;
+		Node curr = root;
+
+		while (curr != null) {
+			Node left = curr.left;
+			if (left == null) {
+				if (prev != null && prev.data >= curr.data)
+					return false;
+				prev = curr;
+				curr = curr.right;
+			} else { // left !null , get rMost of left
+				Node rMost = getRightMostNode(left, curr);
+				// 2 cases ->
+				if (rMost.right == null) { // make thread
+					rMost.right = curr;
+					curr = curr.left;
+				} else {
+					rMost.right = null;
+					if (prev != null && prev.data >= curr.data)
+						return false;
+					prev = curr;
+					curr = curr.right;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	Node getRightMostNode(Node node, Node curr) {
+		while (node.right != null && node.right != curr) {
+			node = node.right;
+		}
+		return node;
+	}
 }

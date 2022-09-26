@@ -487,4 +487,30 @@ public class stacks {
 
 	// 346. Moving Average from Data Stream
 
+
+	//32. Longest Valid Parentheses
+	public int longestValidParentheses(String s) {
+		if (s == null || s.length() == 0) return 0;
+		int max = 0;
+
+		Stack < Integer > st = new Stack < > ();
+		st.push(-1);
+
+		for (int i = 0; i < s.length(); i++) {
+			char ch = s.charAt(i);
+
+			if (ch == '(') { //just add
+				st.push(i);
+			} else {
+				st.pop(); //atleast 1 size , we pushed -1 in st
+				if (st.size() == 0) {
+					st.push(i); //start of a new sequence
+				} else { //opening bracket was popped , calculate max
+					max = Math.max(max, i - st.peek());
+				}
+			}
+		}
+
+		return max;
+	}
 }

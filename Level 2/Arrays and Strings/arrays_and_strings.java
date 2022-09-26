@@ -233,27 +233,37 @@ public class arrays_and_strings {
 	// Leetcode 41. First Missing Positive********************************************
 
 	public int firstMissingPositive(int[] nums) {
+		// first positive missing starting from 1
+		//A1. search 1 , 2... n O(n^2)
+		//A2. sort and start checking from first +ve number
+		//A3. imp observation ideally for n size 1..n must exist
+		// if any num is missing it is ans , else n+1 is ans
+
+		//Step 1 . Mark elements which are out of range and check is 1 exists
+		boolean isOnePresent = false;
 		int n = nums.length;
-		//Step 1 . mark elements which are out of range and check if 1 exists
-		//range shd be 1..n for n size array
-		boolean one = false;
+
 		for (int i = 0; i < n; i++) {
-			if (nums[i] == 1)
-				one = true;
-			if (nums[i] < 1 || nums[i] > n)
-				nums[i] = 1;
+			if (nums[i] == 1) {
+				isOnePresent = true;
+			}
+			if (nums[i] < 1 || nums[i] > n) {
+				nums[i] = 1; //mark with 1
+			}
 		}
 
-		//if one is not present it's 1st missing pos
-		if (!one) return 1;
+		//Step 2 . if 1 absent , it is ans
+		if (isOnePresent == false) {
+			return 1;
+		}
 
-		//Step 2. Map value with indexes
+		//Step 3. Mark corresponding indexes
 		for (int i = 0; i < n; i++) {
 			int idx = Math.abs(nums[i]) - 1;
 			nums[idx] = -Math.abs(nums[idx]);
 		}
 
-		//Step 3. find the res , the idx which is still +ve means idx+1 is missing
+		//Step 4. Now first +ve/unmarked/vis idx is missing
 		for (int i = 0; i < n; i++) {
 			if (nums[i] > 0) return i + 1;
 		}
@@ -627,7 +637,51 @@ public class arrays_and_strings {
 
 
 	//Stack Method
+	public int[] maxSlidingWindow(int[] nums, int k) {
 
+		if (nums.length == 1) return nums;
+		int n = nums.length;
+		int[] ans = new int[n - k + 1];
+		int[] nge = NGE(nums);
+
+		int j = 0;
+
+		for (int i = 0; i < ans.length; i++) {
+			if (j < i) j = i;
+
+			//while j in range
+			while (nge[j] < i + k) {
+				j = nge[j];
+			}
+			ans[i] = nums[j];
+		}
+
+		return ans;
+	}
+
+	public int[] NGE(int[] nums) {
+		Stack < Integer > st = new Stack < > ();
+		int n = nums.length;
+		int[] nge = new int[n];
+		st.push(0);
+
+		for (int i = 1; i < n; i++) {
+			if (nums[st.peek()] >= nums[i]) {
+				st.push(i);
+			} else {
+				while (!st.isEmpty() && nums[st.peek()] < nums[i]) {
+					nge[st.pop()] = i;
+				}
+			}
+			st.push(i);
+		}
+
+		while (!st.isEmpty()) {
+			nge[st.pop()] = n;
+		}
+
+		return nge;
+	}
 
 	// digit multiplier, https://practice.geeksforgeeks.org/problems/digit-multiplier3000/1
 
@@ -830,6 +884,90 @@ public class arrays_and_strings {
 
 		return max;
 	}
+
+
+	//XOR
+	public int missingNumber(int[] nums) {
+
+		int xor = 0, i = 0;
+		for (i = 0; i < nums.length; i++) {
+			xor = xor ^ i ^ nums[i];
+		}
+
+		return xor ^ i;
+	}
+
+	//Sum
+	public static int missingNumber(int[] nums) {
+		int sum = nums.length;
+		for (int i = 0; i < nums.length; i++)
+			sum += i - nums[i];
+		return sum;
+	}
+
+	// 125. Valid Palindrome
+	public boolean isPalindrome(String s) {
+		StringBuilder sb = new StringBuilder();
+		for (char ch : s.toCharArray()) {
+			if (ch >= 'a' && ch <= 'z') {
+				sb.append(ch);
+			} else if (ch >= 'A' && ch <= 'Z') {
+				char temp = (char)(ch + 32);
+				sb.append(temp);
+			} else if (Character.isDigit(ch)) {
+				sb.append(ch);
+			}
+		}
+
+		System.out.println(sb);
+		return isPal(sb.toString());
+	}
+
+	public boolean isPal(String str) {
+		int i = 0 , j = str.length() - 1;
+		while (i <= j) {
+			if (str.charAt(i) != str.charAt(j)) {
+				return false;
+			}
+			i++;
+			j--;
+		}
+		return true;
+	}
+
+	// 680. Valid Palindrome II
+	public boolean validPalindrome(String s) {
+
+		int i = 0, j = s.length() - 1;
+		if (isPal(s, i, j)) return true;
+
+		while (i < j) {
+			if (s.charAt(i) != s.charAt(j)) {
+				if (isPal(s, i + 1, j)) return true;
+				else if (isPal(s, i, j - 1)) return true;
+				else return false;
+			}
+			i++;
+			j--;
+		}
+		return false;
+	}
+
+	public boolean isPal(String s, int i, int j) {
+		while (i < j) {
+			if (s.charAt(i) != s.charAt(j)) {
+				return false;
+			}
+			i++;
+			j--;
+		}
+		return true;
+	}
+
+	//can also be solved recursively
+
+	//generalise for atmost k chars
+	// Valid Palindrome III
 
 
 	public static void main(String[] args) {

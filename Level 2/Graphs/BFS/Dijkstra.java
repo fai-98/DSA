@@ -76,62 +76,78 @@ public class Dijkstra {
             }
         }
 
-        //Dijkstra  better version
+        //Dijkstra  better version  - using parent arr , you can also make the path
         public static void dijikstra_01(ArrayList<Edge>[] graph, int src) {
             int N = graph.length;
             ArrayList<Edge>[] ngraph = new ArrayList[N];
             for (int i = 0; i < N; i++)
                 ngraph[i] = new ArrayList<>();
-    
+
             boolean[] vis = new boolean[N];
             PriorityQueue<pair> pq = new PriorityQueue<>((a, b) -> {
                 return a.wsf - b.wsf; // for prims : return a.w - b.w;
             });
-    
+
             int[] dis = new int[N];
             int[] par = new int[N];
-    
+
             pq.add(new pair(src, -1, 0, 0));
             while (pq.size() != 0) {
+                // rem
                 pair p = pq.remove();
-    
+
+                // mark*
                 if (vis[p.vtx])
                     continue;
-    
+
                 if (p.par != -1)
                     addEdge(ngraph, p.vtx, p.par, p.w);
-    
+
                 vis[p.vtx] = true;
-    
+
+                //work
                 dis[p.vtx] = p.wsf;
                 par[p.vtx] = p.par;
-    
+
+                //add unvis nbrs*
                 for (Edge e : graph[p.vtx]) {
                     if (!vis[e.v])
                         pq.add(new pair(e.v, p.vtx, e.w, p.wsf + e.w));
                 }
             }
         }
-    
+
+
+        //parent array is not needed here
+
+
+        // There's no need for the visited vector.
+
+        // If a node is visited then there cannot exist a distance to that node that is shorter,
+        // so, checking p.wsf > dis[p.vtx] is enough.
         public static void dijikstra_02(ArrayList<Edge>[] graph, int src) {
             int N = graph.length;
             PriorityQueue<pair> pq = new PriorityQueue<>((a, b) -> {
                 return a.wsf - b.wsf;
             });
-    
+
             int[] dis = new int[N];
             int[] par = new int[N];
             Arrays.fill(dis, (int) 1e9);
             Arrays.fill(par, -1);
-    
+
             pq.add(new pair(src, 0));
             dis[src] = 0;
+
             while (pq.size() != 0) {
+                //rem
                 pair p = pq.remove();
-    
+
+                //if greater distance to curr vtx , ignore path
                 if (p.wsf > dis[p.vtx])
                     continue;
-    
+
+                //add shorter/better distance path
                 for (Edge e : graph[p.vtx]) {
                     if (p.wsf + e.w < dis[e.v]) {
                         dis[e.v] = p.wsf + e.w;
@@ -142,6 +158,11 @@ public class Dijkstra {
             }
         }
     }
+
+
+
+    // Refer :
+    // https://www.hackerearth.com/practice/algorithms/graphs/shortest-path-algorithms/tutorial/
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

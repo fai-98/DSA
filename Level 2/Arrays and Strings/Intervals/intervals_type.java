@@ -9,22 +9,23 @@ public class intervals_type {
 
 		// arr[curr] <= dep[prev];
 		//prev ke jane s phle hi or just at that moment agli train agayi , we need another platform
-		int platform = 0, oMax = -(int)1e9;
+		// min platform = max no. of trains at a particular time
+		int maxTrain = 0, platform = -(int)1e9;
 		int i = 0; //arrival
 		int j = 0; //departure
 
-		while (i < n) {
+		while (i < n && j < n) {
 			if (arr[i] <= dep[j]) {
-				platform++;
+				maxTrain++;
 				i++;
 			} else {
-				platform--;
+				maxTrain--;
 				j++;
 			}
 
-			oMax = Math.max(oMax , platform);
+			platform = Math.max(platform , maxTrain);
 		}
-		return oMax;
+		return platform;
 
 	}
 
@@ -141,7 +142,7 @@ public class intervals_type {
 			} else if (r2 > r1) { //2. Partial merging
 				r1 = r2; //expand the interval to bigger rightbound
 			} else { //3. full merge
-				// interval already exists inside l1...r1
+				// interval already exists inside l1...r1 (r2 <= r1)
 			}
 		}
 
@@ -152,6 +153,38 @@ public class intervals_type {
 		res.add(subinterval);
 		return res.toArray(new int[res.size()][]);
 	}
+
+	// 452. Minimum Number of Arrows to Burst Balloons
+	public int findMinArrowShots(int[][] arr) {
+		// Arrays.sort(arr, (a, b) -> {
+		//     return (a[0] - b[0]);
+		// });
+		Arrays.sort(arr, (a, b) -> Integer.compare(a[0], b[0]));
+
+		int arrow = 1;
+		int ei1 = arr[0][1];
+
+		for (int i = 0; i < arr.length; i++) {
+			int si2 = arr[i][0], ei2 = arr[i][1];
+
+			if (si2 > ei1) { //no overlap , need arrow
+				arrow++;
+				ei1 = ei2; //update ranges
+			} else {
+				//we only need to care about ei , si are sorted si2 always >= si1
+				//overlap si2 <= ei1 (full or partial)
+				ei1 = Math.min(ei1, ei2);
+				//this is the common area bw overlapped intervals
+				//only when third interval overlaps here , we dont need the arrow
+			}
+		}
+
+		return arrow;
+	}
+	// 56 Merge Intervals <- very similar😈
+	// 435 Non-overlapping Intervals <- very similar😈
+	// 252 Meeting Rooms
+	// 253 Meeting Rooms II
 
 	// leetcode 986. https://leetcode.com/problems/interval-list-intersections/
 	public int[][] intervalIntersection(int[][] firstList, int[][] secondList) {

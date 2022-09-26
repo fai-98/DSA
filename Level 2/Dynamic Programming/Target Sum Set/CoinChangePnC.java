@@ -108,16 +108,39 @@ public class CoinChangePnC {
 		return dp[amount];
 	}
 
+	// 2240. Number of Ways to Buy Pens and Pencils
+	public long waysToBuyPensPencils(int total, int cost1, int cost2) {
+		//similar to coin change
+		int arr[] = new int[2];
+		arr[0] = cost1;
+		arr[1] = cost2;
+		long[][] dp = new long[3][total + 1];
+
+		dp[0][0] = 1;
+
+		for (int i = 1; i < 3; i++) {
+			for (int j = 1; j <= total; j++) {
+				if (arr[i - 1] <= j) {
+					dp[i][j] = 1 + dp[i - 1][j] + dp[i][j - arr[i - 1]];
+				} else {
+					dp[i][j] = dp[i - 1][j];
+				}
+			}
+		}
+
+		return dp[2][total] + 1;
+	}
+
 
 	public static void main(String[] args) {
 		// int S = 10;
-		// int S = 5;
-		// // int coin[] = { 2, 3, 5, 7 };
-		// int coin[] = { 1, 2, 5 };
+		int S = 5;
+		// int coin[] = { 2, 3, 5, 7 };
+		int coin[] = { 1, 2, 5 };
 		// int n = coin.length;
 		// System.out.println(change_Tab(S,  coin));
-		// System.out.println(permute(coin, S));
+		System.out.println(permute(coin, S));
 
-		System.out.println(targetSet());
+		// System.out.println(targetSet());
 	}
 }
