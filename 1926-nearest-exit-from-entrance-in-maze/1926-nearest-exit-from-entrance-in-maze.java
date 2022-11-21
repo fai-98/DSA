@@ -8,7 +8,7 @@ class Solution {
         
         Queue < Integer > q = new ArrayDeque < > ();
         q.offer(i * m + j);
-        maze[i][j] = '+';
+        maze[i][j] = '+'; //mark here otherwise it'll return to start pos.
 
         while (q.size() > 0) {
             int size = q.size();
