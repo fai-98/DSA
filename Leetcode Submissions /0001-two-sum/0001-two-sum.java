@@ -12,4 +12,8 @@ class Solution {
         
         return ans;
     }
+
+    public void test(){
+        
+    }
 }
