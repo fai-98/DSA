@@ -1009,5 +1009,193 @@ public class heaps {
 
 		return result;
 	}
+
+	// =============================== SORTING AND HEAP (LC HARD PROBLEMS) =====================================
+
+	// 	O(2^n) :  solution when we generate all the subsequences
+
+	// What can we do to optimize, another approach, can we use given conditions to our advantage 
+
+	// Maximize problems 
+	// Sort array in dec order  - we set min and all prev shd be greater
+	// Use min heap - we poll the smallest val
+
+
+	// Minimize problems 
+	// Sort array in dec order  - we set max and all others shd be smaller
+	// Use min heap - we poll the largest val to minimize res
+
+	// K
+	// In at most k, start loop from i = 0 and make ans from there 
+	// In eexact k, add to queue till k-1, start loop from i = k-1 i.e kth item
+
+	//https://leetcode.com/problems/maximum-subsequence-score/description/
+
+	// Time complexity: O( N * Log(N) + (N-k) * Log(k) )
+	// Space complexity: O(N) + O(k) = O(N+K)
+	
+	public long maxScore(int[] nums1, int[] nums2, int k) {
+        // res = Long.MIN_VALUE;
+        return solve(nums1, nums2, k);
+    }
+
+    public long solve(int[] arr1, int[] arr2, int k) {
+        int n = arr1.length;
+        long max = Long.MIN_VALUE;
+        int[][] arr = new int[n][2];
+
+        for (int i = 0; i < n; i++) {
+            arr[i][0] = arr1[i];
+            arr[i][1] = arr2[i];
+        }
+        //sort on basis of arr2 i.e min val array, in dec order
+        //dec order bcz we dont need to rem prev val from q, coz all prev idx have val <    currMin
+        Arrays.sort(arr, (a, b) -> {
+            return b[1] - a[1];
+        });
+
+        //we maintain sz of pq at max k, when we add k-1 elements 
+        //then we loop we add ith val which is mandatory, and we remove peek of pq
+        //which is min, i.e smallest val, so we maximize the sum
+        PriorityQueue < Integer > pq = new PriorityQueue < > ((a, b) -> {
+            return a - b; //min heap
+        });
+
+        long sum = 0, res = Long.MIN_VALUE;
+        for (int i = 0; i < k - 1; i++) {
+            pq.offer(arr[i][0]);
+            sum += arr[i][0];
+        }
+
+        //heap size = k-1, min at peek
+        //loop n-k times
+        for (int i = k - 1; i < n; i++) {
+            pq.offer(arr[i][0]); //mandatory
+            sum += arr[i][0];
+
+            //calc res 
+            res = Long.max(res, sum * arr[i][1]); //sum * min
+
+            //make size k-1 and update sum
+            sum -= pq.peek();
+            pq.poll();
+        }
+
+        return res;
+
+    }
+
+    public void solve_dfs(int[] arr1, int[] arr2, int idx, int k, long sum1, long min2) {
+        if (k == 0 && idx <= arr1.length) {
+            res = Long.max(sum1 * min2, res);
+        }
+
+        if (idx >= arr1.length) return;
+
+        //inc
+        solve_dfs(arr1, arr2, idx + 1, k - 1, sum1 + arr1[idx], Long.min(arr2[idx], min2));
+        solve_dfs(arr1, arr2, idx + 1, k, sum1, min2);
+    }
+
+
+	// Steps.
+	//1. Make pair arr1(S) arr2(M) coz mapping is imp
+	//2. Sort Min arr in dec order
+	//3. Add to min heap first k-1 elements also keep running sum
+	//4. Start loop from i = k-1 till n, k-1 times 
+	//5. Add arr1[i] (Sum arr) to heap and sum (mandatory)
+	//6. Make ans max = arr1[i] + top(k-1 ele from heap) * min(arr2[i])
+	//7. Remove smallest from heap(peek) and subtract from sum
+
+	// https://leetcode.com/problems/maximum-performance-of-a-team/description/
+
+	// (𝑎 mod 𝑚)+(𝑏 mod 𝑚)  mod 𝑚=𝑎+𝑏  mod 𝑚
+ 	// (𝑎 mod 𝑚)−(𝑏 mod 𝑚)  mod 𝑚=𝑎−𝑏  mod 𝑚
+	// (𝑎 mod 𝑚)⋅(𝑏 mod 𝑚)  mod 𝑚=𝑎⋅𝑏  mod 𝑚
+
+	public int maxPerformance(int n, int[] s, int[] e, int k) {
+        //99% same as 2542. Maximum Subsequence Score
+        //Only diff is at most k, instead of strictly k
+        int MOD = (int) 1e9 + 7;
+        long res = -(int) 1e9;
+        long sum = 0;
+        int[][] arr = new int[n][2]; //speed(sum), eff(min)
+
+        for (int i = 0; i < n; i++) {
+            arr[i][0] = s[i];
+            arr[i][1] = e[i];
+        }
+
+        Arrays.sort(arr, (a, b) -> {
+            return b[1] - a[1]; //dec order of eff..
+        });
+
+        PriorityQueue < Integer > pq = new PriorityQueue < > (); //min heap
+
+        // for (int i = 0; i < k - 1; i++) {
+        //     pq.offer(arr[i][0]); //sum arr
+        //     sum += arr[i][0];
+        // }
+
+        //start loop from i=0 instead of i = k-1
+        for (int i = 0; i < n; i++) {
+            pq.offer(arr[i][0]);
+            sum += arr[i][0];
+
+            // int currRes = ((sum % MOD) * (arr[i][1] % MOD)) % MOD;
+            res = Math.max(res, (sum * arr[i][1]));
+
+            if (pq.size() == k) {
+                sum -= pq.peek();
+                pq.poll();
+            }
+        }
+        return (int)(res % (long)(MOD));
+    }
+
+    //The at most k condition is valid only for first k highest vals from min array
+
+
+	// https://leetcode.com/problems/minimum-cost-to-hire-k-workers/description/
+	public double mincostToHireWorkers(int[] quality, int[] wage, int k) {
+        // after ratio, quality * ratio matters, wage not imp
+        int n = wage.length;
+        double res = Double.MAX_VALUE, qSum = 0;
+        double[][] arr = new double[n][2]; //qua,ratio
+
+        for(int i=0; i<n; i++){
+            arr[i][0] = quality[i]*1.0;
+            arr[i][1] = (1.0 * wage[i])/quality[i];
+        }
+
+        Arrays.sort(arr,Comparator.comparingDouble(a -> a[1])); //inc order of ratio
+        
+        //max heap, peek is max quality, to remove
+        PriorityQueue<Double> pq = new PriorityQueue<>(Collections.reverseOrder());
+
+        for(int i=0; i<k-1; i++){
+            qSum += arr[i][0];
+            pq.offer(arr[i][0]);
+        } //first k-1 vals
+
+        for(int i=k-1; i<n; i++){
+            pq.offer(arr[i][0]);
+            qSum += arr[i][0];
+
+            res = Double.min(res , qSum * arr[i][1]);
+
+            qSum -= pq.peek();
+            pq.poll();
+        }
+        return res;
+    }
+	// all other wage to quality ratio should be less than selected one
+	// wage to quality minimize -> wage less, quality more
+	//make wage/qua ratio, sort in dec order, add k vals and start from i = k-1
+	// we have to minimize sum(quality * ratio), fix 1 ratio as max one and pick least 2 values from the heap(max) so as to remove the max quality from the heap coz we have to minimize sum of quality
+
+
+
+	// https://leetcode.com/problems/ipo/
 }
 
